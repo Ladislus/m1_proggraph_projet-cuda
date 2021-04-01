@@ -1,9 +1,3 @@
-//
-// Created by ladislus on 01/04/2021.
-//
-/**
- * Fill a vector of 100 ints on the GPU with consecutive values.
- */
 #include <iostream>
 #include <vector>
 
