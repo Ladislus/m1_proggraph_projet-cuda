@@ -27,7 +27,7 @@ void missing_data() {
 }
 
 char convert_intensity(uchar intensity) {
-    std::cout << intensity << std::endl;
+    std::cout << (int) intensity << std::endl;
     return chars[intensity];
 }
 
@@ -35,8 +35,8 @@ void process(const cv::Mat& image, std::ofstream& output) {
 
     for (size_t row = 0; row < image.rows; row++) {
         for (size_t col = 0; col < image.cols; col++) {
-            cv::Vec3b intensity = image.at<cv::Vec3b>(row, col);
-            output << convert_intensity((intensity[0] + intensity[1] + intensity[2]) % chars.size());
+            uchar intensity = image.at<uchar>(row, col);
+            output << convert_intensity((intensity) % chars.size());
         }
         output << std::endl;
     }
