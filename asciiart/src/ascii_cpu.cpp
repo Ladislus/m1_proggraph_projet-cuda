@@ -8,11 +8,10 @@ int main(int argc, char** argv) {
 
     if (!image.data) missing_data();
 
-    cv::Mat new_image = *process(image);
+    std::ofstream output("out.txt");
+    process(image, output);
 
-    namedWindow("Display Image", cv::WINDOW_AUTOSIZE);
-    imshow("Display Image", new_image);
-    cv::waitKey(0);
+    output.close();
 
     return EXIT_SUCCESS;
 }
@@ -28,19 +27,17 @@ void missing_data() {
 }
 
 char convert_intensity(uchar intensity) {
+    std::cout << intensity << std::endl;
     return chars[intensity];
 }
 
-cv::Mat* process(const cv::Mat& image) {
-    cv::Mat* candidate = new cv::Mat(image.rows, image.cols, CV_8UC1);
+void process(const cv::Mat& image, std::ofstream& output) {
 
     for (size_t row = 0; row < image.rows; row++) {
         for (size_t col = 0; col < image.cols; col++) {
             cv::Vec3b intensity = image.at<cv::Vec3b>(row, col);
-
-            candidate->at<uchar>(row, col) = convert_intensity((intensity[0] + intensity[1] + intensity[2]) * chars.size());
+            output << convert_intensity((intensity[0] + intensity[1] + intensity[2]) % chars.size());
         }
+        output << std::endl;
     }
-
-    return candidate;
 }
