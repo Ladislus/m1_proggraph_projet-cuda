@@ -12,5 +12,6 @@ void process(const cv::Mat&, std::ofstream&);
 char convert_intensity(uchar);
 
 const std::string chars = " .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
+const float divider = 255.0f / (chars.size() - 1);
 
 #endif

@@ -27,16 +27,18 @@ void missing_data() {
 }
 
 char convert_intensity(uchar intensity) {
-    assert(intensity <= chars.size());
-    return chars[intensity];
+    int rounded = static_cast<int>(static_cast<float>(intensity) / divider);
+    std::cout << rounded << std::endl;
+    assert(rounded < chars.size());
+    return chars[rounded];
 }
 
 void process(const cv::Mat& image, std::ofstream& output) {
 
     for (size_t row = 0; row < image.rows; row++) {
         for (size_t col = 0; col < image.cols; col++) {
-            uchar converted_char = convert_intensity((image.at<uchar>(row, col)) % chars.size());
-            output << converted_char << converted_char;
+            uchar converted_char = convert_intensity(image.at<uchar>(row, col));
+            output << converted_char << converted_char << converted_char;
         }
         output << std::endl;
     }
