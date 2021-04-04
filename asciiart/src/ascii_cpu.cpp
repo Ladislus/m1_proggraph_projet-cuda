@@ -6,9 +6,9 @@ int main(int argc, char** argv) {
 
     cv::Mat image = cv::imread(argv[1], cv::IMREAD_GRAYSCALE);
 
-    if (!image.data) missing_data();
+    if (image.empty() || !image.data) missing_data();
 
-    std::ofstream output("out.txt");
+    std::ofstream output("ascii_cpu.txt");
     process(image, output);
 
     output.close();
@@ -16,24 +16,13 @@ int main(int argc, char** argv) {
     return EXIT_SUCCESS;
 }
 
-void missing_argument() {
-    printf("usage: DisplayImage.out <Image_Path>\n");
-    exit(EXIT_FAILURE);
-}
-
-void missing_data() {
-    printf("No image data \n");
-    exit(EXIT_FAILURE);
-}
-
 char convert_intensity(uchar intensity) {
     int rounded = static_cast<int>(static_cast<float>(intensity) / divider);
-    std::cout << rounded << std::endl;
     assert(rounded < chars.size());
     return chars[rounded];
 }
 
-void process(const cv::Mat& image, std::ofstream& output) {
+void process(const_mat_ref image, std::ofstream& output) {
 
     for (size_t row = 0; row < image.rows; row++) {
         for (size_t col = 0; col < image.cols; col++) {
