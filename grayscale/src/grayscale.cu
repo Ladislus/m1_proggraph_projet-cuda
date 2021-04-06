@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
     cudaError e1 = cudaMalloc(&grayscaled, data_size);
     if (e1 != cudaSuccess) std::cerr << "Error 1 : " << cudaGetErrorString(e1) << std::endl;
 
-    cudaError e2 = cudaMemcpy(&rgb, image.data, data_size, cudaMemcpyHostToDevice);
+    cudaError e2 = cudaMemcpy(rgb, image.data, data_size, cudaMemcpyHostToDevice);
     if (e2 != cudaSuccess) std::cerr << "Error 2 : " << cudaGetErrorString(e2) << std::endl;
 
     // TIMERS
