@@ -33,10 +33,10 @@ FILE(GLOB ASCII_CPU_SOURCES
         "asciiart/src/*.cpp")
 ADD_EXECUTABLE(ascii_cpu ${ASCII_CPU_SOURCES} ${COMMON})
 TARGET_LINK_LIBRARIES(ascii_cpu ${OpenCV_LIBS})
-#FILE(GLOB ASCII_GPU_SOURCES
-#        "asciiart/src/*.cu")
-#ADD_EXECUTABLE(ascii_gpu ${ASCII_GPU_SOURCES} ${COMMON})
-#TARGET_LINK_LIBRARIES(ascii_gpu ${OpenCV_LIBS})
+FILE(GLOB ASCII_GPU_SOURCES
+        "asciiart/src/*.cu")
+ADD_EXECUTABLE(ascii_gpu ${ASCII_GPU_SOURCES} ${COMMON})
+TARGET_LINK_LIBRARIES(ascii_gpu ${OpenCV_LIBS})
 
 #################
 #  Convolution  #

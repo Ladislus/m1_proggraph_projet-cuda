@@ -1,3 +1,4 @@
+### Dossiers
 echo 'Checking for directory "cmake-build-debug"...';
 if [ ! -d 'cmake-build-debug' ]; then
   mkdir 'cmake-build-debug';
@@ -18,6 +19,8 @@ echo 'Moving to "cmake-build-debug"...';
 cd 'cmake-build-debug' || exit;
 echo 'Done';
 echo;
+
+### CMake / Compile
 echo 'Generating CMake configuration';
 cmake ..;
 echo 'Cmake done';
@@ -26,6 +29,8 @@ echo 'Compiling';
 make;
 echo 'Program compiled';
 echo;
+
+### Grayscale
 echo 'Executing "grayscale_cpu"';
 time ./grayscale_cpu ../grayscale/Rue.png;
 echo 'Copying outpout file';
@@ -36,5 +41,18 @@ time ./grayscale_gpu ../grayscale/Rue.png;
 echo 'Copying outpout file';
 cp grayscale_gpu.png ../output;
 echo;
+
+### ASCII
+echo 'Executing "ascii_cpu"';
+time ./ascii_cpu ../asciiart/pokeball.png;
+echo 'Copying outpout file';
+cp ascii_cpu.txt ../output;
 echo;
+echo 'Executing "ascii_gpu"';
+time ./ascii_gpu ../asciiart/pokeball.png;
+echo 'Copying outpout file';
+cp ascii_gpu.txt ../output;
+echo;
+
+### Fin
 echo 'TESTS DONE';

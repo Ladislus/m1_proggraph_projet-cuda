@@ -20,7 +20,7 @@ void grayscale(const uchar* data, uchar* candidate, size_t rows, size_t cols) {
     uint i = blockIdx.x * blockDim.x + threadIdx.x;
     uint j = blockIdx.y * blockDim.y + threadIdx.y;
     if( i < cols && j < rows )
-        candidate[ j * cols + i ] = (307 * data[3 * (j * cols + i)] + 604 * data[3 * (j * cols + i ) + 1] + 113 * data[3 * ( j * cols + i ) + 2]) >> 10; // >>10 <=> division par 1024
+        candidate[j * cols + i] = (307 * data[3 * (j * cols + i)] + 604 * data[3 * (j * cols + i ) + 1] + 113 * data[3 * ( j * cols + i ) + 2]) >> 10; // >>10 <=> division par 1024
 }
 
 int main(int argc, char** argv) {

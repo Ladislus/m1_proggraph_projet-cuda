@@ -1,4 +1,4 @@
-#include "ascii_cpu.hpp"
+#include "ascii.hpp"
 
 int main(int argc, char** argv) {
 
@@ -36,6 +36,11 @@ char convert_intensity(uchar intensity) {
     return chars[rounded];
 }
 
+/**
+ * Fonction de transformation de l'image d'entrée en ASCII
+ * @param image L'image source
+ * @param output Le stream vers le fichier de sortie
+ */
 void process(const_mat_ref image, std::ofstream& output) {
 
     // Parcours des ligne
