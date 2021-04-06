@@ -9,7 +9,7 @@ __constant__ const char local_chars[71] = " .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrx
  * @return Le caractère ASCII correspondant
  */
  __device__
-char convert_intensity(uchar intensity) {
+char device_convert_intensity(uchar intensity) {
     // Convertion de l'intensité en indice dans le set de caractère
     int rounded = static_cast<int>(static_cast<float>(intensity) / divider);
     // Vérification que l'indice n'est pas OOB
@@ -29,7 +29,7 @@ void asciify(const uchar* data, uchar* candidate, size_t rows, size_t cols) {
     uint i = blockIdx.x * blockDim.x + threadIdx.x;
     uint j = blockIdx.y * blockDim.y + threadIdx.y;
     if( i < cols && j < rows )
-        candidate[j * cols + i] = convert_intensity(data[j * cols + i]);
+        candidate[j * cols + i] = device_convert_intensity(data[j * cols + i]);
 }
 
 int main(int argc, char** argv) {
