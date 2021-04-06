@@ -10,7 +10,7 @@ int main(int argc, char** argv) {
 
     if (image.channels() != 4) throw std::logic_error("No support for image that are not 4 channels yet !");
 
-    const_mat_ptr result = process(image, Effect::FLOU_GAUSSIEN);
+    const_mat_ptr result = process(image, Effect::DETECTION_BORD);
     cv::imwrite("convolution_cpu.png", *result);
 
     delete result;
@@ -60,11 +60,15 @@ const_mat_ptr apply(const_mat_ref mat, const_vector_ref kernel, float divider, f
                     sum_red += current_pixel[2] * current_factor;
                 }
 
-            uchar result_blue = (sum_blue > 255) ? 255 : ((sum_blue < 0) ? 0 : (static_cast<float>(sum_blue) / divider) + offset);
-            uchar result_green = (sum_green > 255) ? 255 : ((sum_green < 0) ? 0 : (static_cast<float>(sum_green) / divider) + offset);
-            uchar result_red = (sum_red > 255) ? 255 : ((sum_red < 0) ? 0 : (static_cast<float>(sum_red) / divider) + offset);
+            int result_blue = static_cast<int>((static_cast<float>(sum_blue) / divider) + offset);
+            int result_green = static_cast<int>((static_cast<float>(sum_green) / divider) + offset);
+            int result_red = static_cast<int>((static_cast<float>(sum_red) / divider) + offset);
 
-            candidate->at<cv::Vec4b>(i, j) = { result_blue, result_green, result_red, mat.at<cv::Vec4b>(i, j)[3] };
+            uchar channel_blue = (result_blue > 255) ? 255 : ((result_blue < 0) ? 0 : result_blue);
+            uchar channel_green = (result_green > 255) ? 255 : ((result_green < 0) ? 0 : result_green);
+            uchar channel_red = (result_red > 255) ? 255 : ((result_red < 0) ? 0 : result_red);
+
+            candidate->at<cv::Vec4b>(i, j) = { channel_blue, channel_green, channel_red, mat.at<cv::Vec4b>(i, j)[3] };
         }
 
     return candidate;
