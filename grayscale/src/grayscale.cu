@@ -40,12 +40,12 @@ int main(int argc, char** argv) {
     uchar* rgb;
     uchar* grayscaled;
     cudaError e0 = cudaMalloc(&rgb, data_size);
-    if (e0 != cudaSuccess) cudaGetErrorString(e0);
+    if (e0 != cudaSuccess) std::cerr << cudaGetErrorString(e0) << std::endl;
     cudaError e1 = cudaMalloc(&grayscaled, data_size);
-    if (e1 != cudaSuccess) cudaGetErrorString(e1);
+    if (e1 != cudaSuccess) std::cerr << cudaGetErrorString(e1) << std::endl;
 
     cudaError e2 = cudaMemcpy(&rgb, image.data, data_size, cudaMemcpyHostToDevice);
-    if (e2 != cudaSuccess) cudaGetErrorString(e2);
+    if (e2 != cudaSuccess) std::cerr << cudaGetErrorString(e2) << std::endl;
 
     // TIMERS
     cudaEvent_t start, stop;
@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
     cudaEventDestroy(stop);
 
     cudaError e3 = cudaMemcpy(output_data, grayscaled, data_size, cudaMemcpyDeviceToHost);
-    if (e3 != cudaSuccess) cudaGetErrorString(e3);
+    if (e3 != cudaSuccess) std::cerr << cudaGetErrorString(e3) << std::endl;
     auto* result = new cv::Mat(image.rows, image.cols, CV_8UC1, output_data);
     cv::imwrite("grayscale_gpu.png", *result);
 
