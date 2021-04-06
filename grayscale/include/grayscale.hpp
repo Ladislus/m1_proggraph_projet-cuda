@@ -3,4 +3,7 @@
 
 #include "common.hpp"
 
+uchar convert_intensity(cv::Vec3b);
+const_mat_ptr process(const_mat_ref);
+
 #endif

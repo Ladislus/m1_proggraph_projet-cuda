@@ -51,6 +51,7 @@ const_mat_ptr process(const_mat_ref mat, const Effect& effect) {
  */
 const_mat_ptr apply(const_mat_ref mat, const_vector_ref kernel, float divider, float offset) {
 
+    // Création de la matrice de retour
     auto* candidate = new cv::Mat(mat.rows, mat.cols, CV_8UC(4));
 
     // Pour chacunes des lignes
