@@ -9,7 +9,7 @@ __constant__ const float device_divider = 255.0f / static_cast<float>(device_siz
  * @param intensity L'intensité du caractère à convertie
  * @return Le caractère ASCII correspondant
  */
- __device__
+__device__
 uchar device_convert_intensity(uchar intensity) {
     // Convertion de l'intensité en indice dans le set de caractère
     int rounded = static_cast<int>(static_cast<float>(intensity) / device_divider);
@@ -17,6 +17,16 @@ uchar device_convert_intensity(uchar intensity) {
     assert(rounded < device_size);
     // Retourne le caractère correspondant
     return device_chars[rounded];
+}
+
+// DEBUG
+char convert_intensity(uchar intensity) {
+    // Convertion de l'intensité en indice dans le set de caractère
+    int rounded = static_cast<int>(static_cast<float>(intensity) / divider);
+    // Vérification que l'indice n'est pas OOB
+    assert(rounded < chars.size());
+    // Retourne le caractère correspondant
+    return chars[rounded];
 }
 
 /**
