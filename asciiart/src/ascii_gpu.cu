@@ -83,14 +83,16 @@ int main(int argc, char** argv) {
     std::ofstream output("ascii_gpu.txt");
     size_t i, j;
     for (i = 0; i < image.rows; i++) {
-        for (j = 0; j < image.cols; j++)
+        for (j = 0; j < image.cols; j++) {
             output << output_data[i * image.cols + j] << output_data[i * image.cols + j];
+            char x = convert_intensity(image.at<uchar>(i, j));
+            if (x != output_data[i * image.cols + j]) {
+                std::clog << "Device: " << output_data[i * image.cols + j] << "  ;  Expected: " << x << std::endl;
+            }
+        }
         output << std::endl;
     }
     output.close();
-
-    std::clog << "Image [ " << image.rows << " , " << image.cols << " ]" << std::endl;
-    std::clog << "Output [ " << i << " , " << j << " ]" << std::endl;
 
     // Free les pointers
     delete[] output_data;
