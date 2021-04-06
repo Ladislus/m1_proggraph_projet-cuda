@@ -9,7 +9,7 @@ fi
 echo;
 echo 'Checking for directory "output"...';
 if [ ! -d 'output' ]; then
-  mkdir 'cmake-build-debug';
+  mkdir 'output';
   echo 'Created !';
 else
     echo 'OK';
