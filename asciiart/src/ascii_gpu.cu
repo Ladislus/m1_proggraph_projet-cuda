@@ -1,7 +1,8 @@
 #include "ascii.hpp"
 
-__constant__ const size_t size = 71;
-__constant__ const char local_chars[71] = " .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
+__constant__ const size_t device_size = 71;
+__constant__ const char device_chars[71] = " .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
+__constant__ const float device_divider = 255.0f / static_cast<float>(device_size - 1);
 
 /**
  * Fonction permettant d'obtenir le caractère ASCII correspondant à l'intensité donnée
@@ -11,11 +12,11 @@ __constant__ const char local_chars[71] = " .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrx
  __device__
 char device_convert_intensity(uchar intensity) {
     // Convertion de l'intensité en indice dans le set de caractère
-    int rounded = static_cast<int>(static_cast<float>(intensity) / divider);
+    int rounded = static_cast<int>(static_cast<float>(intensity) / device_divider);
     // Vérification que l'indice n'est pas OOB
-    assert(rounded < size);
+    assert(rounded < device_size);
     // Retourne le caractère correspondant
-    return local_chars[rounded];
+    return device_chars[rounded];
 }
 
 /**
