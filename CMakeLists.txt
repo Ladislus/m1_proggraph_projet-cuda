@@ -13,6 +13,19 @@ FILE(GLOB COMMON
         "common/src/*.cpp")
 
 ###############
+#  Grayscale  #
+###############
+INCLUDE_DIRECTORIES(grayscale/include)
+FILE(GLOB GRAYSCALE_CPU_SOURCES
+        "grayscale/src/*.cpp")
+ADD_EXECUTABLE(grayscale_cpu ${GRAYSCALE_CPU_SOURCES} ${COMMON})
+TARGET_LINK_LIBRARIES(grayscale_cpu ${OpenCV_LIBS})
+FILE(GLOB GRAYSCALE_GPU_SOURCES
+        "grayscale/src/*.cu")
+ADD_EXECUTABLE(grayscale_gpu ${GRAYSCALE_GPU_SOURCES} ${COMMON})
+TARGET_LINK_LIBRARIES(grayscale_gpu ${OpenCV_LIBS})
+
+###############
 #  ASCII Art  #
 ###############
 INCLUDE_DIRECTORIES(asciiart/include)

@@ -1,0 +1,6 @@
+#ifndef CUDA_RIBARDIERE_WALCAK_GRAYSCALE_HPP
+#define CUDA_RIBARDIERE_WALCAK_GRAYSCALE_HPP
+
+#include "common.hpp"
+
+#endif
