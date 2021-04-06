@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
 
     dim3 thread_size( 32, 4 ); //128 threads
     dim3 block_size( (( image.cols - 1) / (thread_size.x - 2) + 1), (( image.rows - 1 ) / (thread_size.y - 2) + 1) );
-    asciify<<<block_size, thread_size, thread_size.x * thread_size.y>>>(rgb, grayscaled, image.rows, image.cols);
+    asciify<<<block_size, thread_size, thread_size.x * thread_size.y>>>(grayscaled, asciified, image.rows, image.cols);
 
     // TIMER
     cudaEventRecord(stop);
