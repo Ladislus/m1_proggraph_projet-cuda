@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
 
     cudaMemcpy(output_data, grayscaled, data_size, cudaMemcpyDeviceToHost);
     auto* result = new cv::Mat(image.rows, image.cols, CV_8UC1, output_data);
-    cv::imwrite("grayscale_cpu.png", *result);
+    cv::imwrite("grayscale_gpu.png", *result);
 
     // Free les pointers
     delete[] output_data;
