@@ -81,12 +81,16 @@ int main(int argc, char** argv) {
 
     // Ouverture du stream vers le fichier de sortie
     std::ofstream output("ascii_gpu.txt");
-    for (size_t i = 0; i < image.rows; i++) {
-        for (size_t j = 0; j < image.cols; j++)
+    size_t i, j;
+    for (i = 0; i < image.rows; i++) {
+        for (j = 0; j < image.cols; j++)
             output << output_data[i * image.cols + j] << output_data[i * image.cols + j];
         output << std::endl;
     }
     output.close();
+
+    std::clog << "Image [ " << image.rows << " , " << image.cols << " ]" << std::endl;
+    std::clog << "Output [ " << i << " , " << j << " ]" << std::endl;
 
     // Free les pointers
     delete[] output_data;
