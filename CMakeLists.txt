@@ -46,7 +46,7 @@ FILE(GLOB CONVOLUTION_CPU_SOURCES
         "convolution/src/*.cpp")
 ADD_EXECUTABLE(convolution_cpu ${CONVOLUTION_CPU_SOURCES} ${COMMON})
 TARGET_LINK_LIBRARIES(convolution_cpu ${OpenCV_LIBS})
-#FILE(GLOB CONVOLUTION_GPU_SOURCES
-#        "convolution/src/*.cu")
-#ADD_EXECUTABLE(convolution_gpu ${CONVOLUTION_GPU_SOURCES} ${COMMON})
-#TARGET_LINK_LIBRARIES(convolution_gpu ${OpenCV_LIBS})
+FILE(GLOB CONVOLUTION_GPU_SOURCES
+        "convolution/src/*.cu")
+ADD_EXECUTABLE(convolution_gpu ${CONVOLUTION_GPU_SOURCES} ${COMMON})
+TARGET_LINK_LIBRARIES(convolution_gpu ${OpenCV_LIBS})

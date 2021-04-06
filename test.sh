@@ -54,5 +54,17 @@ echo 'Copying outpout file';
 cp ascii_gpu.txt ../output;
 echo;
 
+### CONVOLUTION
+echo 'Executing "ascii_cpu"';
+time ./convolution_cpu ../convolution/Celeste.png;
+echo 'Copying outpout file';
+cp convolution_gpu.png ../output;
+echo;
+echo 'Executing "ascii_gpu"';
+time ./convolution_gpu ../convolution/Celeste.png;
+echo 'Copying outpout file';
+cp convolution_gpu.png ../output;
+echo;
+
 ### Fin
 echo 'TESTS DONE';
