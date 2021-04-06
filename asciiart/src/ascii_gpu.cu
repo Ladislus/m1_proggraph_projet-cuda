@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
     std::ofstream output("ascii_gpu.txt");
     for (size_t i = 0; i < image.rows; i++) {
         for (size_t j = 0; j < image.cols; j++)
-            output << output_data[j * image.cols + i] << output_data[j * image.cols + i];
+            output << output_data[i * image.cols + j] << output_data[i * image.cols + j];
         output << std::endl;
     }
     output.close();
