@@ -37,5 +37,6 @@ time ./grayscale_gpu ../grayscale/Rue.png;
 echo;
 echo 'Copying outpout file';
 cp grayscale_gpu.png ../output;
+echo;
 echo 'TESTS DONE';
 echo;
