@@ -26,10 +26,9 @@ uchar device_convert_intensity(uchar intensity) {
  */
 __global__
 void asciify(const uchar* data, uchar* candidate, size_t rows, size_t cols) {
-
     uint i = blockIdx.x * blockDim.x + threadIdx.x;
     uint j = blockIdx.y * blockDim.y + threadIdx.y;
-    if( i < cols && j < rows )
+    if(i < cols && j < rows)
         candidate[j * cols + i] = device_convert_intensity(data[j * cols + i]);
 }
 
@@ -46,6 +45,7 @@ int main(int argc, char** argv) {
     if (image.empty() || !image.data) missing_data();
 
     auto* output_data = new uchar[data_size];
+    for (size_t i = 0; i < data_size; i++) output_data[i] = 255;
 
     uchar* grayscaled;
     uchar* asciified;
