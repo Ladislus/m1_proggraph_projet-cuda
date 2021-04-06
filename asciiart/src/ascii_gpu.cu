@@ -1,7 +1,7 @@
 #include "ascii.hpp"
 
-__constant__ const size_t device_size = 71;
-__constant__ const uchar device_chars[71] = " .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
+__constant__ const size_t device_size = 70;
+__constant__ const uchar device_chars[device_size + 1] = " .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
 __constant__ const float device_divider = 255.0f / static_cast<float>(device_size - 1);
 
 /**
