@@ -14,7 +14,8 @@ uchar convert_intensity(cv::Vec3b pixel) {
  * @param image L'image source
  * @return Un pointer vers la nouvelle image
  */
-__global__ void grayscale(const uchar* data, uchar* candidate, size_t rows, size_t cols) {
+__global__
+void grayscale(const uchar* data, uchar* candidate, size_t rows, size_t cols) {
 
     uint i = blockIdx.x * blockDim.x + threadIdx.x;
     uint j = blockIdx.y * blockDim.y + threadIdx.y;
@@ -49,7 +50,9 @@ int main(int argc, char** argv) {
     cudaEventCreate(&stop);
     cudaEventRecord(start);
 
-    grayscale<<<32, 32>>>(rgb, grayscaled, image.rows, image.cols);
+    dim3 thread_size( 32, 4 ); //128 threads
+    dim3 block_size( (( image.cols - 1) / (thread_size.x - 2) + 1), (( image.rows - 1 ) / (thread_size.y - 2) + 1) );
+    grayscale<<<block_size, thread_size, thread_size.x * thread_size.y>>>(rgb, grayscaled, image.rows, image.cols);
 
     // TIMER
     cudaEventRecord(stop);
