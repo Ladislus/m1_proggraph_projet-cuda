@@ -52,7 +52,7 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
          // (size_t provoque des "narrow conversion")
          for (size_t current_neighbor_index = 0; current_neighbor_index < device_kernel_size; current_neighbor_index++) {
 
-             printf("[%d; %d] nighbor: d\n", i, j, current_neighbor_index);
+             printf("[%d; %d] nighbor: %d\n", i, j, current_neighbor_index);
 
              // Si la case n'est pas hors limite...
              if (device_check(i, j, current_neighbor_index, rows, cols)) {
