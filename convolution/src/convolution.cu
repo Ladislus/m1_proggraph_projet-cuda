@@ -22,7 +22,7 @@ bool device_check(int i, int j, int current_coords, int max_row, int max_col) {
     int new_x = static_cast<int>(i) + device_coordinates[current_coords][0];
     int new_y = static_cast<int>(j) + device_coordinates[current_coords][1];
     // Vérification que les coordonnées sont dans les limites
-    return (0 <= new_x && new_x < max_row) && (0 <= new_y && new_y < max_col);
+    return (0 <= new_x && new_x < max_col) && (0 <= new_y && new_y < max_row);
 }
 
 /**
@@ -114,7 +114,6 @@ void detection_bord(const_mat_ref mat, uchar* input, uchar* output) {
     dim3 block_size( (( mat.cols - 1) / (thread_size.x - 2) + 1), (( mat.rows - 1 ) / (thread_size.y - 2) + 1) );
 
     int kernel[device_kernel_size] {-1, -1, -1, -1, 8, -1, -1, -1, -1};
-    std::clog << "LAUNCH DEVICE" << std::endl;
     device_apply<<<block_size, thread_size, thread_size.x * thread_size.y>>>(input, output, mat.rows, mat.cols, kernel, 1.0f, 0.0f);
 }
 
@@ -132,34 +131,26 @@ int main(int argc, char** argv) {
     // Image qui n'est pas sur  channels
     if (image.channels() != 4) unsupported_channel_number();
 
-    std::clog << "e0" << std::endl;
     // Pointers de l'image source sur le devide + allocation
     uchar* rgba_data = nullptr;
     cudaError e0 = cudaMalloc(&rgba_data, data_size);
     if (e0 != cudaSuccess) std::cerr << "Error 0 : " << cudaGetErrorString(e0) << std::endl;
 
-    std::clog << "e1" << std::endl;
     // Pointers de l'image de retour sur le devide + allocation
     uchar* convolution;
     cudaError e1 = cudaMalloc(&convolution, data_size);
     if (e1 != cudaSuccess) std::cerr << "Error 1 : " << cudaGetErrorString(e1) << std::endl;
 
-    std::clog << "e2" << std::endl;
-    std::clog << image.size() << std::endl;
-    std::clog << data_size << std::endl;
     // Copie de l'image source vers le device
     cudaError e2 = cudaMemcpy(rgba_data, image.data, data_size, cudaMemcpyHostToDevice);
-    std::clog << "e2 bis" << std::endl;
     if (e2 != cudaSuccess) std::cerr << "Error 2 : " << cudaGetErrorString(e2) << std::endl;
 
-    std::clog << "Timer" << std::endl;
     // TIMERS avant
     cudaEvent_t start, stop;
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
     cudaEventRecord(start);
 
-    std::clog << "LAUNCH" << std::endl;
     // Lancement du calcul
     detection_bord(image, rgba_data, convolution);
 
