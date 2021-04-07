@@ -114,6 +114,7 @@ void detection_bord(const_mat_ref mat, uchar* input, uchar* output) {
     dim3 block_size( (( mat.cols - 1) / (thread_size.x - 2) + 1), (( mat.rows - 1 ) / (thread_size.y - 2) + 1) );
 
     int kernel[device_kernel_size] {-1, -1, -1, -1, 8, -1, -1, -1, -1};
+    std::clog << "LAUNCH" << std::endl;
     device_apply<<<block_size, thread_size, thread_size.x * thread_size.y>>>(input, output, mat.rows, mat.cols, kernel, 1.0f, 0.0f);
 }
 
@@ -124,7 +125,8 @@ int main(int argc, char** argv) {
 
     // Récupération de l'image
     cv::Mat image = cv::imread(argv[1], cv::IMREAD_UNCHANGED);
-    size_t data_size = image.rows * image.cols * 4;
+    size_t data_size = image.rows * image.cols * device_kernel_size;
+    std::clog << device_kernel_size << std::endl;
 
     // Image vide
     if (image.empty() || !image.data) missing_data();
