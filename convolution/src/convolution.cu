@@ -41,7 +41,7 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
      uint j = blockIdx.y * blockDim.y + threadIdx.y;
 
      printf("[%d; %d]\n", i, j);
-     printf("Kernel %p\n", kernel);
+     printf("Kernel %p\n", &kernel);
 
      if(i < cols && j < rows) {
          // Initialisation de la somme
