@@ -142,6 +142,7 @@ int main(int argc, char** argv) {
     // Pointers de l'image de retour sur le devide + allocation
     uchar* convolution;
     cudaError e1 = cudaMalloc(&convolution, data_size);
+    cudaGetErrorString(e1);
     if (e1 != cudaSuccess) std::cerr << "Error 1 : " << cudaGetErrorString(e1) << std::endl;
 
     std::clog << "e2" << std::endl;
