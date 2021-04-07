@@ -56,9 +56,9 @@ echo;
 
 ### CONVOLUTION
 echo 'Executing "convolution_cpu"';
-time ./convolution_cpu ../input/Paysage.png;
+time ./convolution_cpu ../asciiart/pokeball.png;
 echo 'Copying outpout file';
-cp convolution_gpu.png ../output;
+cp convolution_cpu.png ../output;
 echo;
 echo 'Executing "convolution_gpu"';
 time ./convolution_gpu ../input/Paysage.png;
