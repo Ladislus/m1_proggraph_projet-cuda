@@ -51,55 +51,71 @@ const_mat_ptr process(const_mat_ref mat, const Effect& effect) {
  */
 const_mat_ptr apply(const_mat_ref mat, const_vector_ref kernel, float divider, float offset) {
 
+    std::clog << "START" << std::endl;
+
     // Création de la matrice de retour
     auto* candidate = new cv::Mat(mat.rows, mat.cols, CV_8UC(4));
 
     // Pour chacunes des lignes
     // (size_t provoque des "narrow conversion")
-    for (int i = 0; i < mat.rows; i++)
-
+    for (int i = 0; i < mat.rows; i++) {
+        std::clog << "i = " << i << std::endl;
         // Pour chacunes de colonnes
         // (size_t provoque des "narrow conversion")
         for (int j = 0; j < mat.cols; j++) {
+            std::clog << "j = " << j << std::endl;
 
             // Initialisation de la somme
             int sum_blue = 0;
             int sum_green = 0;
             int sum_red = 0;
+            std::clog << "Somme init" << std::endl;
+
 
             // Pour chacun des 9 cases dans son voisinage...
             // (size_t provoque des "narrow conversion")
-            for (int current_neighbor_index = 0; current_neighbor_index < kernel.size(); current_neighbor_index++)
+            for (int current_neighbor_index = 0; current_neighbor_index < kernel.size(); current_neighbor_index++) {
+                std::clog << "Neighbor: " << current_neighbor_index << std::endl;
 
                 // Si la case n'est pas hors limite...
                 if (check(i, j, current_neighbor_index, mat.rows, mat.cols)) {
+                    std::clog << "Check OK" << std::endl;
                     // Récupération du facteur courant (dans le kernel)
                     int current_factor = kernel[current_neighbor_index];
+                    std::clog << "Got factor: " << current_factor << std::endl;
                     // Calcul des coordonnées du pixel à trouver
-                    std::pair<int, int> current_coords = {i + coordinates[current_neighbor_index].first, j + coordinates[current_neighbor_index].second };
+                    std::pair<int, int> current_coords = {i + coordinates[current_neighbor_index].first,
+                                                          j + coordinates[current_neighbor_index].second};
+                    std::clog << "Got new coords: [ x: " << current_coords.first << " ; y: " << current_coords.second << " ]"  << std::endl;
                     // Récupération du pixel
                     cv::Vec4b current_pixel = mat.at<cv::Vec4b>(current_coords.first, current_coords.second);
+                    std::clog << "Got pixel" << std::endl;
 
                     // Ajout dans les sommes des 3 channels
                     sum_blue += current_pixel[0] * current_factor;
                     sum_green += current_pixel[1] * current_factor;
                     sum_red += current_pixel[2] * current_factor;
+                    std::clog << "Updated sommes" << std::endl;
                 }
-
+            }
             // Calcul des sommmes de convolution des 3 channels
             int result_blue = static_cast<int>((static_cast<float>(sum_blue) / divider) + offset);
             int result_green = static_cast<int>((static_cast<float>(sum_green) / divider) + offset);
             int result_red = static_cast<int>((static_cast<float>(sum_red) / divider) + offset);
+            std::clog << "Post process" << std::endl;
 
             // Convertion des sommes en unsigned char (0 <= x <= 255)
             uchar channel_blue = (result_blue > 255) ? 255 : ((result_blue < 0) ? 0 : result_blue);
             uchar channel_green = (result_green > 255) ? 255 : ((result_green < 0) ? 0 : result_green);
             uchar channel_red = (result_red > 255) ? 255 : ((result_red < 0) ? 0 : result_red);
+            std::clog << "Char process" << std::endl;
 
             // Mise à jour du pixel
-            candidate->at<cv::Vec4b>(i, j) = { channel_blue, channel_green, channel_red, mat.at<cv::Vec4b>(i, j)[3] };
+            candidate->at<cv::Vec4b>(i, j) = {channel_blue, channel_green, channel_red, mat.at<cv::Vec4b>(i, j)[3]};
+            std::clog << "Affect" << std::endl;
         }
-
+    }
+    std::clog << "END" << std::endl;
     // Retourne la nouvelle matrice
     return candidate;
 }
