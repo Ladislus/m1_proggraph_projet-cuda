@@ -40,7 +40,7 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
      uint i = blockIdx.x * blockDim.x + threadIdx.x;
      uint j = blockIdx.y * blockDim.y + threadIdx.y;
 
-     printf("[%d; %d] ", i, j);
+     printf("[%d; %d]\n", i, j);
 
      if(i < cols && j < rows) {
          // Initialisation de la somme
@@ -56,6 +56,7 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
 
              // Si la case n'est pas hors limite...
              if (device_check(i, j, current_neighbor_index, rows, cols)) {
+                 printf("[%d; %d] nighbor: %d OKOK\n", i, j, current_neighbor_index);
                  // Récupération du facteur courant (dans le kernel)
                  int current_factor = kernel[current_neighbor_index];
                  // Calcul des coordonnées du pixel à trouver
