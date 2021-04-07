@@ -62,46 +62,59 @@ const_mat_ptr apply(const_mat_ref mat, const_vector_ref kernel, float divider, f
         // Pour chacunes de colonnes
         // (size_t provoque des "narrow conversion")
         for (int j = 0; j < mat.cols; j++) {
-            std::clog << "[ hauteur (i): " << i << " ; largeur (j): " << j << " ]" << std::endl;
+            if (j == 343 && i == 1713) std::clog << "[ hauteur (i): " << i << " ; largeur (j): " << j << " ]" << std::endl;
 
+            if (j == 343 && i == 1713) std::clog << "Setting sums to 0 ...";
             // Initialisation de la somme
             int sum_blue = 0;
             int sum_green = 0;
             int sum_red = 0;
+            if (j == 343 && i == 1713) std::clog << "OK" << std::endl;
 
 
             // Pour chacun des 9 cases dans son voisinage...
             // (size_t provoque des "narrow conversion")
             for (int current_neighbor_index = 0; current_neighbor_index < kernel.size(); current_neighbor_index++) {
+                if (j == 343 && i == 1713) std::clog << "Current neighbor index :" << current_neighbor_index << std::endl;
 
+                if (j == 343 && i == 1713) std::clog << "Check ...";
                 // Si la case n'est pas hors limite...
                 if (check(i, j, current_neighbor_index, mat.rows, mat.cols)) {
+                    if (j == 343 && i == 1713) std::clog << "PASSED" << std::endl;
                     // Récupération du facteur courant (dans le kernel)
                     int current_factor = kernel[current_neighbor_index];
+                    if (j == 343 && i == 1713) std::clog << "Current factor" << current_factor << std::endl;
                     // Calcul des coordonnées du pixel à trouver
                     std::pair<int, int> current_coords = {i + coordinates[current_neighbor_index].first,
                                                           j + coordinates[current_neighbor_index].second};
+                    if (j == 343 && i == 1713) std::clog << "New coords: " << current_coords.first << ";" << current_coords.second << std::endl;
                     // Récupération du pixel
                     cv::Vec4b current_pixel = mat.at<cv::Vec4b>(current_coords.first, current_coords.second);
-
+                    if (j == 343 && i == 1713) std::clog << "Got pixel" << std::endl;
+                    if (j == 343 && i == 1713) std::clog << "Updating sums ...";
                     // Ajout dans les sommes des 3 channels
                     sum_blue += current_pixel[0] * current_factor;
                     sum_green += current_pixel[1] * current_factor;
                     sum_red += current_pixel[2] * current_factor;
-                }
+                    if (j == 343 && i == 1713) std::clog << "Done" << std::endl;
+                } else if (j == 343 && i == 1713) std::clog << "FAILED" << std::endl;
             }
+            if (j == 343 && i == 1713) std::clog << "Processing final results";
             // Calcul des sommmes de convolution des 3 channels
             int result_blue = static_cast<int>((static_cast<float>(sum_blue) / divider) + offset);
             int result_green = static_cast<int>((static_cast<float>(sum_green) / divider) + offset);
             int result_red = static_cast<int>((static_cast<float>(sum_red) / divider) + offset);
-
+            if (j == 343 && i == 1713) std::clog << "Done" << std::endl;
+            if (j == 343 && i == 1713) std::clog << "Processing new channels";
             // Convertion des sommes en unsigned char (0 <= x <= 255)
             uchar channel_blue = (result_blue > 255) ? 255 : ((result_blue < 0) ? 0 : result_blue);
             uchar channel_green = (result_green > 255) ? 255 : ((result_green < 0) ? 0 : result_green);
             uchar channel_red = (result_red > 255) ? 255 : ((result_red < 0) ? 0 : result_red);
-
+            if (j == 343 && i == 1713) std::clog << "Done" << std::endl;
+            if (j == 343 && i == 1713) std::clog << "Writing ...";
             // Mise à jour du pixel
             candidate->at<cv::Vec4b>(i, j) = {channel_blue, channel_green, channel_red, mat.at<cv::Vec4b>(i, j)[3]};
+            if (j == 343 && i == 1713) std::clog << "Done" << std::endl;
         }
     std::clog << "END" << std::endl;
     // Retourne la nouvelle matrice
