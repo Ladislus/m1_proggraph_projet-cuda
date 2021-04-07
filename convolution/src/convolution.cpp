@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
     if (image.channels() != 4) unsupported_channel_number();
 
     // Création de la copie avec l'effet
-    const_mat_ptr result = process(image, Effect::FLOU_BOX);
+    const_mat_ptr result = process(image, Effect::DETECTION_BORD);
     // Enregistrement de l'image
     cv::imwrite("convolution_cpu.png", *result);
 

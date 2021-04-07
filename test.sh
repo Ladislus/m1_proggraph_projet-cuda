@@ -32,36 +32,36 @@ echo;
 
 ### Grayscale
 echo 'Executing "grayscale_cpu"';
-time ./grayscale_cpu ../grayscale/Rue.png;
+time ./grayscale_cpu ../input/Paysage.png;
 echo 'Copying outpout file';
 cp grayscale_cpu.png ../output;
 echo;
 echo 'Executing "grayscale_gpu"';
-time ./grayscale_gpu ../grayscale/Rue.png;
+time ./grayscale_gpu ../input/Paysage.png;
 echo 'Copying outpout file';
 cp grayscale_gpu.png ../output;
 echo;
 
 ### ASCII
 echo 'Executing "ascii_cpu"';
-time ./ascii_cpu ../asciiart/pokeball.png;
+time ./ascii_cpu ../input/Paysage.png;
 echo 'Copying outpout file';
 cp ascii_cpu.txt ../output;
 echo;
 echo 'Executing "ascii_gpu"';
-time ./ascii_gpu ../asciiart/pokeball.png;
+time ./ascii_gpu ../input/Paysage.png;
 echo 'Copying outpout file';
 cp ascii_gpu.txt ../output;
 echo;
 
 ### CONVOLUTION
 echo 'Executing "convolution_cpu"';
-time ./convolution_cpu ../convolution/Celeste.png;
+time ./convolution_cpu ../input/Paysage.png;
 echo 'Copying outpout file';
 cp convolution_gpu.png ../output;
 echo;
 echo 'Executing "convolution_gpu"';
-time ./convolution_gpu ../convolution/Celeste.png;
+time ./convolution_gpu ../input/Paysage.png;
 echo 'Copying outpout file';
 cp convolution_gpu.png ../output;
 echo;
