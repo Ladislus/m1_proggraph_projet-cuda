@@ -18,7 +18,7 @@ __constant__ const char device_coordinates[device_kernel_size][2] {
  * @return True si le pixel est dans l'image, faux s'il est hors limite
  */
 __device__
-bool check(int i, int j, int current_coords, int max_row, int max_col) {
+bool device_check(int i, int j, int current_coords, int max_row, int max_col) {
     int new_x = static_cast<int>(i) + device_coordinates[current_coords][0];
     int new_y = static_cast<int>(j) + device_coordinates[current_coords][1];
     // Vérification que les coordonnées sont dans les limites
@@ -34,7 +34,7 @@ bool check(int i, int j, int current_coords, int max_row, int max_col) {
  * @return Un pointer vers la nouvelle image
  */
  __global__
-void apply(const uchar* data, uchar* candidate, size_t rows, size_t cols, const int* kernel, float divider, float offset) {
+void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols, const int* kernel, float divider, float offset) {
 
      uint i = blockIdx.x * blockDim.x + threadIdx.x;
      uint j = blockIdx.y * blockDim.y + threadIdx.y;
@@ -50,7 +50,7 @@ void apply(const uchar* data, uchar* candidate, size_t rows, size_t cols, const 
          for (size_t current_neighbor_index = 0; current_neighbor_index < device_kernel_size; current_neighbor_index++)
 
              // Si la case n'est pas hors limite...
-             if (check(i, j, current_neighbor_index, rows, cols)) {
+             if (device_check(i, j, current_neighbor_index, rows, cols)) {
                  // Récupération du facteur courant (dans le kernel)
                  int current_factor = kernel[current_neighbor_index];
                  // Calcul des coordonnées du pixel à trouver
@@ -93,7 +93,8 @@ const_mat_ptr flou_gaussien(const_mat_ref mat, uchar* input, uchar* output) {
     // Calcule du nombre de block
     dim3 block_size( (( mat.cols - 1) / (thread_size.x - 2) + 1), (( mat.rows - 1 ) / (thread_size.y - 2) + 1) );
 
-    return apply<<<block_size, thread_size, thread_size.x * thread_size.y>>>(input, output, mat.rows, mat.cols, { 1, 2, 1, 2, 4, 2, 1, 2, 1 }, 16.0f, 0.0f);
+    int kernel[device_kernel_size] { 1, 2, 1, 2, 4, 2, 1, 2, 1 };
+    device_apply<<<block_size, thread_size, thread_size.x * thread_size.y>>>(input, output, mat.rows, mat.cols, kernel, 16.0f, 0.0f);
 }
 
 const_mat_ptr flou_box(const_mat_ref mat, uchar* input, uchar* output) {
@@ -102,7 +103,8 @@ const_mat_ptr flou_box(const_mat_ref mat, uchar* input, uchar* output) {
     // Calcule du nombre de block
     dim3 block_size( (( mat.cols - 1) / (thread_size.x - 2) + 1), (( mat.rows - 1 ) / (thread_size.y - 2) + 1) );
 
-    return apply<<<block_size, thread_size, thread_size.x * thread_size.y>>>(input, output, mat.rows, mat.cols, { 1, 1, 1, 1, 1, 1, 1, 1, 1 }, 9.0f, 0.0f);
+    int kernel[device_kernel_size] { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+    device_apply<<<block_size, thread_size, thread_size.x * thread_size.y>>>(input, output, mat.rows, mat.cols, kernel, 9.0f, 0.0f);
 }
 
 const_mat_ptr detection_bord(const_mat_ref mat, uchar* input, uchar* output) {
@@ -111,7 +113,8 @@ const_mat_ptr detection_bord(const_mat_ref mat, uchar* input, uchar* output) {
     // Calcule du nombre de block
     dim3 block_size( (( mat.cols - 1) / (thread_size.x - 2) + 1), (( mat.rows - 1 ) / (thread_size.y - 2) + 1) );
 
-    return apply<<<block_size, thread_size, thread_size.x * thread_size.y>>>(input, output, mat.rows, mat.cols, {-1, -1, -1, -1, 8, -1, -1, -1, -1}, 1.0f, 0.0f);
+    int kernel[device_kernel_size] {-1, -1, -1, -1, 8, -1, -1, -1, -1};
+    device_apply<<<block_size, thread_size, thread_size.x * thread_size.y>>>(input, output, mat.rows, mat.cols, kernel, 1.0f, 0.0f);
 }
 
 int main(int argc, char** argv) {
