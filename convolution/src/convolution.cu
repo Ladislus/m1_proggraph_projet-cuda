@@ -134,8 +134,8 @@ int main(int argc, char** argv) {
 
     std::clog << "e0" << std::endl;
     // Pointers de l'image source sur le devide + allocation
-    uchar* rgba = nullptr;
-    cudaError e0 = cudaMalloc(&rgba, data_size);
+    uchar* rgba_data = nullptr;
+    cudaError e0 = cudaMalloc(&rgba_data, data_size);
     if (e0 != cudaSuccess) std::cerr << "Error 0 : " << cudaGetErrorString(e0) << std::endl;
 
     std::clog << "e1" << std::endl;
@@ -147,9 +147,8 @@ int main(int argc, char** argv) {
     std::clog << "e2" << std::endl;
     std::clog << image.size() << std::endl;
     std::clog << data_size << std::endl;
-    std::clog << rgba << std::endl;
     // Copie de l'image source vers le device
-    cudaError e2 = cudaMemcpy(rgba, image.data, data_size, cudaMemcpyHostToDevice);
+    cudaError e2 = cudaMemcpy(rgba_data, image.data, data_size, cudaMemcpyHostToDevice);
     std::clog << "e2 bis" << std::endl;
     if (e2 != cudaSuccess) std::cerr << "Error 2 : " << cudaGetErrorString(e2) << std::endl;
 
@@ -162,7 +161,7 @@ int main(int argc, char** argv) {
 
     std::clog << "LAUNCH" << std::endl;
     // Lancement du calcul
-    detection_bord(image, rgba, convolution);
+    detection_bord(image, rgba_data, convolution);
 
     // TIMER après
     cudaEventRecord(stop);
@@ -188,7 +187,7 @@ int main(int argc, char** argv) {
     delete[] output_data;
 
     // Free des pointers CUDA
-    cudaFree(rgba);
+    cudaFree(rgba_data);
     cudaFree(convolution);
 
     return EXIT_SUCCESS;
