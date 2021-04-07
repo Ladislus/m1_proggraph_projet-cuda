@@ -40,7 +40,7 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
      uint i = blockIdx.x * blockDim.x + threadIdx.x;
      uint j = blockIdx.y * blockDim.y + threadIdx.y;
 
-     printf("[%d; %d]\n", i, j);
+     printf("[%d; %d] ", i, j);
 
      if(i < cols && j < rows) {
          // Initialisation de la somme
@@ -50,28 +50,36 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
 
          // Pour chacun des 9 cases dans son voisinage...
          // (size_t provoque des "narrow conversion")
-         for (size_t current_neighbor_index = 0; current_neighbor_index < device_kernel_size; current_neighbor_index++)
+         for (size_t current_neighbor_index = 0; current_neighbor_index < device_kernel_size; current_neighbor_index++) {
+
+             printf("n: %zu ", current_neighbor_index);
 
              // Si la case n'est pas hors limite...
              if (device_check(i, j, current_neighbor_index, rows, cols)) {
+                 printf("CHECK OK ");
                  // Récupération du facteur courant (dans le kernel)
                  int current_factor = kernel[current_neighbor_index];
                  // Calcul des coordonnées du pixel à trouver
 
+                 printf("factor: %d ", current_factor);
                  int new_x = static_cast<int>(i) + device_coordinates[current_neighbor_index][0];
                  int new_y = static_cast<int>(j) + device_coordinates[current_neighbor_index][1];
+                 printf("x: %d ", new_x);
+                 printf("y: %d ", new_y);
 
                  // Récupération du pixel
                  uchar blue = data[device_channel_number * (new_y * cols + new_x)];
                  uchar green = data[device_channel_number * (new_y * cols + new_x) + 1];
                  uchar red = data[device_channel_number * (new_y * cols + new_x) + 2];
+                 printf("RGB GET DONE");
 
                  // Ajout dans les sommes des 3 channels
                  sum_blue += blue * current_factor;
                  sum_green += green * current_factor;
                  sum_red = red * current_factor;
-             }
-
+                 printf("sums done");
+             } else printf("CHECK FAILED ");
+         }
          // Calcul des sommmes de convolution des 3 channels
          int result_blue = static_cast<int>((static_cast<float>(sum_blue) / divider) + offset);
          int result_green = static_cast<int>((static_cast<float>(sum_green) / divider) + offset);
