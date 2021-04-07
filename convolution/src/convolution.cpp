@@ -62,7 +62,7 @@ const_mat_ptr apply(const_mat_ref mat, const_vector_ref kernel, float divider, f
         // Pour chacunes de colonnes
         // (size_t provoque des "narrow conversion")
         for (int j = 0; j < mat.cols; j++) {
-            std::clog << "[ i: " << i << " ; j: " << j << " ]" << std::endl;
+            std::clog << "[ hauteur (i): " << i << " ; largeur (j): " << j << " ]" << std::endl;
 
             // Initialisation de la somme
             int sum_blue = 0;
