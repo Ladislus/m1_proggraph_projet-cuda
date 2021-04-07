@@ -148,7 +148,7 @@ int main(int argc, char** argv) {
     std::clog << "e2" << std::endl;
     std::clog << image.size() << std::endl;
     std::clog << data_size << std::endl;
-    printf("rgba %p", rgba);
+    printf("rgba %p", &rgba);
     std::clog << rgba << std::endl;
     // Copie de l'image source vers le device
     cudaError e2 = cudaMemcpy(rgba, image.data, data_size, cudaMemcpyHostToDevice);
