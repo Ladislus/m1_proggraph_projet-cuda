@@ -147,6 +147,7 @@ int main(int argc, char** argv) {
     std::clog << "e2" << std::endl;
     // Copie de l'image source vers le device
     cudaError e2 = cudaMemcpy(rgba, image.data, data_size, cudaMemcpyHostToDevice);
+    std::clog << "e2 bis" << std::endl;
     if (e2 != cudaSuccess) std::cerr << "Error 2 : " << cudaGetErrorString(e2) << std::endl;
 
     std::clog << "Timer" << std::endl;
