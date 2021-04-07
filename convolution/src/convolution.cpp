@@ -136,7 +136,7 @@ bool check(int i, int j, int current_coords, int max_row, int max_col) {
     // Calcul des nouvelles coordonnées
     std::pair<int, int> new_coords = { (i + modifier.first), (j + modifier.second) };
     // Vérification que les coordonnées sont dans les limites
-    return (0 <= new_coords.first && new_coords.first <= max_row) && (0 <= new_coords.second && new_coords.second <= max_col);
+    return (0 <= new_coords.first && new_coords.first < max_row) && (0 <= new_coords.second && new_coords.second < max_col);
 }
 
 const_mat_ptr flou_gaussien(const_mat_ref mat) {
