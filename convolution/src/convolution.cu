@@ -125,7 +125,7 @@ int main(int argc, char** argv) {
 
     // Récupération de l'image
     cv::Mat image = cv::imread(argv[1], cv::IMREAD_UNCHANGED);
-    size_t data_size = image.rows * image.cols * device_kernel_size;
+    size_t data_size = image.rows * image.cols * device_channel_number;
 
     // Image vide
     if (image.empty() || !image.data) missing_data();
@@ -147,7 +147,6 @@ int main(int argc, char** argv) {
     std::clog << "e2" << std::endl;
     std::clog << image.size() << std::endl;
     std::clog << data_size << std::endl;
-    if (rgba == nullptr) std::clog << "ENCULÉ" << std::endl;
     std::clog << rgba << std::endl;
     // Copie de l'image source vers le device
     cudaError e2 = cudaMemcpy(rgba, image.data, data_size, cudaMemcpyHostToDevice);
