@@ -1,5 +1,5 @@
 #include "common.hpp"
-#include <stdio.h>
+#include <cstdio.h>
 
 __constant__ const size_t device_channel_number = 4;
 __constant__ const size_t device_kernel_size = 9;
@@ -62,6 +62,8 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
 
                  int new_x = static_cast<int>(i) + device_coordinates[current_neighbor_index][0];
                  int new_y = static_cast<int>(j) + device_coordinates[current_neighbor_index][1];
+
+                 if (new_x >= cols || new_x < 0 || new_y < 0 || new_y >= rows) printf("[%d; %d]\n", i, j);
 
                  // Récupération du pixel
                  uchar blue = data[device_channel_number * (new_y * cols + new_x)];
