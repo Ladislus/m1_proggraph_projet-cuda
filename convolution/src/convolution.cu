@@ -1,4 +1,5 @@
 #include "common.hpp"
+#include <stdio.h>
 
 __constant__ const size_t device_channel_number = 4;
 __constant__ const size_t device_kernel_size = 9;
@@ -38,6 +39,8 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
 
      uint i = blockIdx.x * blockDim.x + threadIdx.x;
      uint j = blockIdx.y * blockDim.y + threadIdx.y;
+
+     printf("[%d; %d]", i, j);
 
      if(i < cols && j < rows) {
          // Initialisation de la somme
