@@ -35,7 +35,7 @@ bool device_check(int i, int j, int current_coords, int max_row, int max_col) {
  * @return Un pointer vers la nouvelle image
  */
  __global__
-void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols, const int* kernel, float divider, float offset) {
+void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols, const int kernel[device_kernel_size], float divider, float offset) {
 
      uint i = blockIdx.x * blockDim.x + threadIdx.x;
      uint j = blockIdx.y * blockDim.y + threadIdx.y;
