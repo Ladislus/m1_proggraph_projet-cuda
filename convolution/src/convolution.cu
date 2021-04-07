@@ -40,7 +40,6 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
      uint i = blockIdx.x * blockDim.x + threadIdx.x;
      uint j = blockIdx.y * blockDim.y + threadIdx.y;
 
-     if (blockIdx.x == 0)
      printf("[%d; %d]\n", i, j);
 
      if(i < cols && j < rows) {
@@ -52,23 +51,19 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
          // Pour chacun des 9 cases dans son voisinage...
          // (size_t provoque des "narrow conversion")
          for (size_t current_neighbor_index = 0; current_neighbor_index < device_kernel_size; current_neighbor_index++) {
-             if (blockIdx.x == 0)
-                 printf("[%d; %d] nighbor: %d\n", i, j, current_neighbor_index);
+             printf("[%d; %d] nighbor: %d\n", i, j, current_neighbor_index);
 
              // Si la case n'est pas hors limite...
              if (device_check(i, j, current_neighbor_index, rows, cols)) {
-                 if (blockIdx.x == 0)
-                     printf("[%d; %d] nighbor: %d OKOK\n", i, j, current_neighbor_index);
+                 printf("[%d; %d] nighbor: %d OKOK\n", i, j, current_neighbor_index);
                  // Récupération du facteur courant (dans le kernel)
                  int current_factor = kernel[current_neighbor_index];
                  // Calcul des coordonnées du pixel à trouver
-                 if (blockIdx.x == 0)
-                     printf("[%d; %d] nighbor:%d OK factor:%d\n", i, j, current_neighbor_index, current_factor);
+                 printf("[%d; %d] nighbor:%d OK factor:%d\n", i, j, current_neighbor_index, current_factor);
 
                  int new_x = static_cast<int>(i) + device_coordinates[current_neighbor_index][0];
                  int new_y = static_cast<int>(j) + device_coordinates[current_neighbor_index][1];
-                 if (blockIdx.x == 0)
-                     printf("[%d; %d] nighbor:%d OK factor:%d nx:%d ny:%d\n", i, j, current_neighbor_index, current_factor, new_x, new_y);
+                 printf("[%d; %d] nighbor:%d OK factor:%d nx:%d ny:%d\n", i, j, current_neighbor_index, current_factor, new_x, new_y);
 
                  if (new_x >= cols || new_x < 0 || new_y < 0 || new_y >= rows) printf("[%d; %d]\n", i, j);
 
