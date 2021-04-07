@@ -114,7 +114,7 @@ void detection_bord(const_mat_ref mat, uchar* input, uchar* output) {
     dim3 block_size( (( mat.cols - 1) / (thread_size.x - 2) + 1), (( mat.rows - 1 ) / (thread_size.y - 2) + 1) );
 
     int kernel[device_kernel_size] {-1, -1, -1, -1, 8, -1, -1, -1, -1};
-    std::clog << "LAUNCH" << std::endl;
+    std::clog << "LAUNCH DEVICE" << std::endl;
     device_apply<<<block_size, thread_size, thread_size.x * thread_size.y>>>(input, output, mat.rows, mat.cols, kernel, 1.0f, 0.0f);
 }
 
@@ -126,34 +126,37 @@ int main(int argc, char** argv) {
     // Récupération de l'image
     cv::Mat image = cv::imread(argv[1], cv::IMREAD_UNCHANGED);
     size_t data_size = image.rows * image.cols * device_kernel_size;
-    std::clog << device_kernel_size << std::endl;
 
     // Image vide
     if (image.empty() || !image.data) missing_data();
     // Image qui n'est pas sur  channels
     if (image.channels() != 4) unsupported_channel_number();
 
-
+    std::clog << "e0" << std::endl;
     // Pointers de l'image source sur le devide + allocation
     uchar* rgba;
     cudaError e0 = cudaMalloc(&rgba, data_size);
     if (e0 != cudaSuccess) std::cerr << "Error 0 : " << cudaGetErrorString(e0) << std::endl;
 
+    std::clog << "e1" << std::endl;
     // Pointers de l'image de retour sur le devide + allocation
     uchar* convolution;
     cudaError e1 = cudaMalloc(&convolution, data_size);
     if (e1 != cudaSuccess) std::cerr << "Error 1 : " << cudaGetErrorString(e1) << std::endl;
 
+    std::clog << "e2" << std::endl;
     // Copie de l'image source vers le device
     cudaError e2 = cudaMemcpy(rgba, image.data, data_size, cudaMemcpyHostToDevice);
     if (e2 != cudaSuccess) std::cerr << "Error 2 : " << cudaGetErrorString(e2) << std::endl;
 
+    std::clog << "Timer" << std::endl;
     // TIMERS avant
     cudaEvent_t start, stop;
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
     cudaEventRecord(start);
 
+    std::clog << "LAUNCH" << std::endl;
     // Lancement du calcul
     detection_bord(image, rgba, convolution);
 
