@@ -1,4 +1,4 @@
-#include "convolution.hpp"
+#include "common.hpp"
 
 __constant__ const size_t device_channel_number = 4;
 __constant__ const size_t device_kernel_size = 9;
@@ -87,7 +87,7 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
      }
 }
 
-const_mat_ptr flou_gaussien(const_mat_ref mat, uchar* input, uchar* output) {
+void flou_gaussien(const_mat_ref mat, uchar* input, uchar* output) {
     //128 threads par blocks
     dim3 thread_size( 32, 4 );
     // Calcule du nombre de block
@@ -97,7 +97,7 @@ const_mat_ptr flou_gaussien(const_mat_ref mat, uchar* input, uchar* output) {
     device_apply<<<block_size, thread_size, thread_size.x * thread_size.y>>>(input, output, mat.rows, mat.cols, kernel, 16.0f, 0.0f);
 }
 
-const_mat_ptr flou_box(const_mat_ref mat, uchar* input, uchar* output) {
+void flou_box(const_mat_ref mat, uchar* input, uchar* output) {
     //128 threads par blocks
     dim3 thread_size( 32, 4 );
     // Calcule du nombre de block
@@ -107,7 +107,7 @@ const_mat_ptr flou_box(const_mat_ref mat, uchar* input, uchar* output) {
     device_apply<<<block_size, thread_size, thread_size.x * thread_size.y>>>(input, output, mat.rows, mat.cols, kernel, 9.0f, 0.0f);
 }
 
-const_mat_ptr detection_bord(const_mat_ref mat, uchar* input, uchar* output) {
+void detection_bord(const_mat_ref mat, uchar* input, uchar* output) {
     //128 threads par blocks
     dim3 thread_size( 32, 4 );
     // Calcule du nombre de block
