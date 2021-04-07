@@ -1,5 +1,5 @@
 #include "common.hpp"
-#include <cstdio.h>
+#include <stdio.h>
 
 __constant__ const size_t device_channel_number = 4;
 __constant__ const size_t device_kernel_size = 9;
