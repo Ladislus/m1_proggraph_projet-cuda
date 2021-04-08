@@ -66,12 +66,14 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
                  uchar green = data[device_channel_number * (new_y * cols + new_x) + 1];
                  uchar red = data[device_channel_number * (new_y * cols + new_x) + 2];
 
-                 printf("[%d,%d] (%d, %d, %d)\n", new_x, new_y, blue, green, red);
+//                 printf("[%d,%d] (%d, %d, %d)\n", new_x, new_y, blue, green, red);
 
                  // Ajout dans les sommes des 3 channels
                  sum_blue += blue * current_factor;
                  sum_green += green * current_factor;
                  sum_red = red * current_factor;
+
+                 printf("[%d,%d] (%d, %d, %d)\n", i, j, sum_blue, sum_green, sum_red);
              }
          }
          // Calcul des sommmes de convolution des 3 channels
