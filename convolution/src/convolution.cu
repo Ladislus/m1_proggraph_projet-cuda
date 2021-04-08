@@ -177,7 +177,7 @@ int main(int argc, char** argv) {
     std::clog << "Output pixels :" << std::endl;
     for (size_t t = 0; t < data_size; t++) std::clog << (int) output_data[t] << " ";
     std::clog << std::endl;
-    auto result = cv::Mat(image.rows, image.cols, CV_8UC4, output_data);
+    auto result = cv::Mat(image.rows, image.cols, CV_8UC(device_channel_number), output_data);
     // Écriture dans le fichier de sortie
     cv::imwrite("convolution_gpu.png", result);
 
