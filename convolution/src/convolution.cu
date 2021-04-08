@@ -106,7 +106,7 @@ void flou_gaussien(const_mat_ref mat, uchar* input, uchar* output) {
 
     int kernel[device_kernel_size] { 1, 2, 1, 2, 4, 2, 1, 2, 1 };
     std::clog << "Kernel: ";
-    for (size_t t = 0; i < device_kernel_size; ++t) std::clog << kernel[t] << " ";
+    for (size_t t = 0; t < device_kernel_size; ++t) std::clog << kernel[t] << " ";
     std::clog << std::endl;
     device_apply<<<block_size, thread_size, thread_size.x * thread_size.y>>>(input, output, mat.rows, mat.cols, kernel, 16.0f, 0.0f);
 }
