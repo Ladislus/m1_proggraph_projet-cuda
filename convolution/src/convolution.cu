@@ -81,12 +81,14 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
          int result_green = static_cast<int>((static_cast<float>(sum_green) / divider) + offset);
          int result_red = static_cast<int>((static_cast<float>(sum_red) / divider) + offset);
 
-          printf("[%d,%d] (%d, %d, %d)\n", i, j, result_blue, result_green, result_red);
+//          printf("[%d,%d] (%d, %d, %d)\n", i, j, result_blue, result_green, result_red);
 
          // Convertion des sommes en unsigned char (0 <= x <= 255)
          uchar channel_blue = (result_blue > 255) ? 255 : ((result_blue < 0) ? 0 : result_blue);
          uchar channel_green = (result_green > 255) ? 255 : ((result_green < 0) ? 0 : result_green);
          uchar channel_red = (result_red > 255) ? 255 : ((result_red < 0) ? 0 : result_red);
+
+         printf("[%d,%d] (%d, %d, %d)\n", i, j, channel_blue, channel_green, channel_red);
 
          // Mise à jour du pixel
          candidate[device_channel_number * (j * cols + i)] = channel_blue;
