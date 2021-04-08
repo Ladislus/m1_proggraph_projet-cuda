@@ -46,7 +46,7 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
          int sum_green = 0;
          int sum_red = 0;
 
-         printf("[%d,%d] (row: %ld; col:%ld)\n", i, j, rows, cols);
+         printf("[%d,%d] (row: %ld; col:%ld) {divider: %f, offset: %f}\n", i, j, rows, cols, divider, offset);
 
          // Pour chacun des 9 cases dans son voisinage...
          // (size_t provoque des "narrow conversion")
