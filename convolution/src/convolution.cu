@@ -18,7 +18,7 @@ __constant__ const char device_coordinates[device_kernel_size][2] {
  * @return True si le pixel est dans l'image, faux s'il est hors limite
  */
 __device__
-bool device_check(int i, int j, int current_coords, int max_row, int max_col) {
+bool device_check(uint i, uint j, int current_coords, size_t max_row, size_t max_col) {
     int new_x = static_cast<int>(i) + device_coordinates[current_coords][0];
     int new_y = static_cast<int>(j) + device_coordinates[current_coords][1];
     // Vérification que les coordonnées sont dans les limites
@@ -47,7 +47,7 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
 
          // Pour chacun des 9 cases dans son voisinage...
          // (size_t provoque des "narrow conversion")
-         for (size_t current_neighbor_index = 0; current_neighbor_index < device_kernel_size; current_neighbor_index++)
+         for (int current_neighbor_index = 0; current_neighbor_index < device_kernel_size; current_neighbor_index++)
 
              // Si la case n'est pas hors limite...
              if (device_check(i, j, current_neighbor_index, rows, cols)) {
@@ -55,8 +55,8 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
                  int current_factor = kernel[current_neighbor_index];
                  // Calcul des coordonnées du pixel à trouver
 
-                 int new_x = static_cast<int>(i) + device_coordinates[current_neighbor_index][0];
-                 int new_y = static_cast<int>(j) + device_coordinates[current_neighbor_index][1];
+                 uint new_x = i + device_coordinates[current_neighbor_index][0];
+                 uint new_y = j + device_coordinates[current_neighbor_index][1];
 
                  // Récupération du pixel
                  uchar blue = data[device_channel_number * (new_y * cols + new_x)];
