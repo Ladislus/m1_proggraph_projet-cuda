@@ -73,13 +73,15 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
                  sum_green += green * current_factor;
                  sum_red = red * current_factor;
 
-                 printf("[%d,%d] (%d, %d, %d)\n", i, j, sum_blue, sum_green, sum_red);
+//                 printf("[%d,%d] (%d, %d, %d)\n", i, j, sum_blue, sum_green, sum_red);
              }
          }
          // Calcul des sommmes de convolution des 3 channels
          int result_blue = static_cast<int>((static_cast<float>(sum_blue) / divider) + offset);
          int result_green = static_cast<int>((static_cast<float>(sum_green) / divider) + offset);
          int result_red = static_cast<int>((static_cast<float>(sum_red) / divider) + offset);
+
+          printf("[%d,%d] (%d, %d, %d)\n", i, j, result_blue, result_green, result_red);
 
          // Convertion des sommes en unsigned char (0 <= x <= 255)
          uchar channel_blue = (result_blue > 255) ? 255 : ((result_blue < 0) ? 0 : result_blue);
