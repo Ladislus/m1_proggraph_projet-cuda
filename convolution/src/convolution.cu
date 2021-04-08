@@ -40,10 +40,6 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
      uint i = blockIdx.x * blockDim.x + threadIdx.x;
      uint j = blockIdx.y * blockDim.y + threadIdx.y;
 
-     printf("[%d; %d]\n", i, j);
-     printf("[%d; %d], divider %f, offset %f\n", i, j, divider, offset);
-     printf("Kernel %d\n", kernel[0]);
-
      if(i < cols && j < rows) {
          // Initialisation de la somme
          int sum_blue = 0;
@@ -57,11 +53,9 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
 
              // Si la case n'est pas hors limite...
              if (device_check(i, j, current_neighbor_index, rows, cols)) {
-                 printf("[%d; %d] nighbor: %d OKOK\n", i, j, current_neighbor_index);
                  // Récupération du facteur courant (dans le kernel)
                  int current_factor = kernel[current_neighbor_index];
                  // Calcul des coordonnées du pixel à trouver
-                 printf("[%d; %d] nighbor:%d OK factor:%d\n", i, j, current_neighbor_index, current_factor);
 
                  int new_x = static_cast<int>(i) + device_coordinates[current_neighbor_index][0];
                  int new_y = static_cast<int>(j) + device_coordinates[current_neighbor_index][1];
@@ -129,12 +123,12 @@ void detection_bord(const_mat_ref mat, uchar* input, uchar* output) {
 
     // Pointers de l'image de retour sur le devide + allocation
     int* kernel_ptr = nullptr;
-    cudaError e1 = cudaMalloc(&kernel_ptr, device_kernel_size);
-    if (e1 != cudaSuccess) std::cerr << "Error 1 : " << cudaGetErrorString(e1) << std::endl;
+    cudaError e1 = cudaMalloc(&kernel_ptr, device_kernel_size * sizeof(int));
+    if (e1 != cudaSuccess) std::cerr << "Error 4 : " << cudaGetErrorString(e1) << std::endl;
 
     // Copie de l'image source vers le device
     cudaError e2 = cudaMemcpy(kernel_ptr, kernel.data(), device_kernel_size * sizeof(int), cudaMemcpyHostToDevice);
-    if (e2 != cudaSuccess) std::cerr << "Error 2 : " << cudaGetErrorString(e2) << std::endl;
+    if (e2 != cudaSuccess) std::cerr << "Error 5 : " << cudaGetErrorString(e2) << std::endl;
 
     device_apply<<<block_size, thread_size, thread_size.x * thread_size.y>>>(input, output, mat.rows, mat.cols, kernel_ptr, 1.0f, 0.0f);
 
