@@ -4,6 +4,7 @@
 #include "common.hpp"
 #include <vector>
 #include <map>
+#include <functional>
 
 // Typedef
 typedef const std::vector<int>& const_vector_ref;
