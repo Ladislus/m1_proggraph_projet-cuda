@@ -1,5 +1,4 @@
 #include "common.hpp"
-#include <stdio.h>
 
 __constant__ const size_t device_channel_number = 4;
 __constant__ const size_t device_kernel_size = 9;
@@ -48,7 +47,7 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
 
          // Pour chacun des 9 cases dans son voisinage...
          // (size_t provoque des "narrow conversion")
-         for (size_t current_neighbor_index = 0; current_neighbor_index < device_kernel_size; current_neighbor_index++) {
+         for (size_t current_neighbor_index = 0; current_neighbor_index < device_kernel_size; current_neighbor_index++)
 
              // Si la case n'est pas hors limite...
              if (device_check(i, j, current_neighbor_index, rows, cols)) {
@@ -59,36 +58,26 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
                  int new_x = static_cast<int>(i) + device_coordinates[current_neighbor_index][0];
                  int new_y = static_cast<int>(j) + device_coordinates[current_neighbor_index][1];
 
-//                 printf("[%d,%d] (row: %ld; col:%ld) {divider: %f, offset: %f} - current index: %ld, Kernel[index]: %d, factor: %d, (%d, %d)\n", i, j, rows, cols, divider, offset, current_neighbor_index, kernel[current_neighbor_index], current_factor, new_x, new_y);
-
                  // Récupération du pixel
                  uchar blue = data[device_channel_number * (new_y * cols + new_x)];
                  uchar green = data[device_channel_number * (new_y * cols + new_x) + 1];
                  uchar red = data[device_channel_number * (new_y * cols + new_x) + 2];
 
-//                 printf("[%d,%d] (%d, %d, %d)\n", new_x, new_y, blue, green, red);
-
                  // Ajout dans les sommes des 3 channels
                  sum_blue += blue * current_factor;
                  sum_green += green * current_factor;
                  sum_red = red * current_factor;
-
-//                 printf("[%d,%d] (%d, %d, %d)\n", i, j, sum_blue, sum_green, sum_red);
              }
-         }
+
          // Calcul des sommmes de convolution des 3 channels
          int result_blue = static_cast<int>((static_cast<float>(sum_blue) / divider) + offset);
          int result_green = static_cast<int>((static_cast<float>(sum_green) / divider) + offset);
          int result_red = static_cast<int>((static_cast<float>(sum_red) / divider) + offset);
 
-//          printf("[%d,%d] (%d, %d, %d)\n", i, j, result_blue, result_green, result_red);
-
          // Convertion des sommes en unsigned char (0 <= x <= 255)
          uchar channel_blue = (result_blue > 255) ? 255 : ((result_blue < 0) ? 0 : result_blue);
          uchar channel_green = (result_green > 255) ? 255 : ((result_green < 0) ? 0 : result_green);
          uchar channel_red = (result_red > 255) ? 255 : ((result_red < 0) ? 0 : result_red);
-
-//         printf("[%d,%d] (%d, %d, %d)\n", i, j, channel_blue, channel_green, channel_red);
 
          // Mise à jour du pixel
          candidate[device_channel_number * (j * cols + i)] = channel_blue;
