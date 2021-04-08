@@ -40,13 +40,13 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
      uint i = blockIdx.x * blockDim.x + threadIdx.x;
      uint j = blockIdx.y * blockDim.y + threadIdx.y;
 
-     printf("[%d,%d]", i, j);
-
      if(i < cols && j < rows) {
          // Initialisation de la somme
          int sum_blue = 0;
          int sum_green = 0;
          int sum_red = 0;
+
+         printf("[%d,%d]\n", i, j);
 
          // Pour chacun des 9 cases dans son voisinage...
          // (size_t provoque des "narrow conversion")
@@ -91,26 +91,6 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
          candidate[device_channel_number * (j * cols + i) + 2] = channel_red;
          candidate[device_channel_number * (j * cols + i) + 3] = data[device_channel_number * (j * cols + i) + 3];
      }
-}
-
-void flou_gaussien(const_mat_ref mat, uchar* input, uchar* output) {
-    //128 threads par blocks
-    dim3 thread_size( 32, 4 );
-    // Calcule du nombre de block
-    dim3 block_size( (( mat.cols - 1) / (thread_size.x - 2) + 1), (( mat.rows - 1 ) / (thread_size.y - 2) + 1) );
-
-    int kernel[device_kernel_size] { 1, 2, 1, 2, 4, 2, 1, 2, 1 };
-    device_apply<<<block_size, thread_size, thread_size.x * thread_size.y>>>(input, output, mat.rows, mat.cols, kernel, 16.0f, 0.0f);
-}
-
-void flou_box(const_mat_ref mat, uchar* input, uchar* output) {
-    //128 threads par blocks
-    dim3 thread_size( 32, 4 );
-    // Calcule du nombre de block
-    dim3 block_size( (( mat.cols - 1) / (thread_size.x - 2) + 1), (( mat.rows - 1 ) / (thread_size.y - 2) + 1) );
-
-    int kernel[device_kernel_size] { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-    device_apply<<<block_size, thread_size, thread_size.x * thread_size.y>>>(input, output, mat.rows, mat.cols, kernel, 9.0f, 0.0f);
 }
 
 void detection_bord(const_mat_ref mat, uchar* input, uchar* output) {
