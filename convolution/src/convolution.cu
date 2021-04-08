@@ -46,9 +46,6 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
          int sum_green = 0;
          int sum_red = 0;
 
-         printf("[%d,%d] (row: %ld; col:%ld) {divider: %f, offset: %f}\n", i, j, rows, cols, divider, offset);
-         printf("[%d,%d] Kernel[0]: %d\n", i, j, kernel[0]);
-
          // Pour chacun des 9 cases dans son voisinage...
          // (size_t provoque des "narrow conversion")
          for (size_t current_neighbor_index = 0; current_neighbor_index < device_kernel_size; current_neighbor_index++) {
@@ -58,6 +55,8 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
                  // Récupération du facteur courant (dans le kernel)
                  int current_factor = kernel[current_neighbor_index];
                  // Calcul des coordonnées du pixel à trouver
+
+                 printf("[%d,%d] (row: %ld; col:%ld) {divider: %f, offset: %f} - Kernel[0]: %d, factor: %d\n", i, j, rows, cols, divider, offset, kernel[0], current_factor);
 
                  int new_x = static_cast<int>(i) + device_coordinates[current_neighbor_index][0];
                  int new_y = static_cast<int>(j) + device_coordinates[current_neighbor_index][1];
