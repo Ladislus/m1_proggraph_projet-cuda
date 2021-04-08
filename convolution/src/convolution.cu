@@ -128,8 +128,8 @@ void detection_bord(const_mat_ref mat, uchar* input, uchar* output) {
     std::vector<int> kernel({-1, -1, -1, -1, 8, -1, -1, -1, -1});
 
     // Pointers de l'image de retour sur le devide + allocation
-    int* kernel_ptr;
-    cudaError e1 = cudaMalloc(&kernel_ptr, device_kernel_size * sizeof(int));
+    int* kernel_ptr = nullptr;
+    cudaError e1 = cudaMalloc(&kernel_ptr, device_kernel_size);
     if (e1 != cudaSuccess) std::cerr << "Error 1 : " << cudaGetErrorString(e1) << std::endl;
 
     // Copie de l'image source vers le device
