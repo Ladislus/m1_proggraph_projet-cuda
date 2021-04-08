@@ -175,7 +175,7 @@ int main(int argc, char** argv) {
     if (e3 != cudaSuccess) std::cerr << "Error 3 : " << cudaGetErrorString(e3) << std::endl;
     // Création de l'image correspondante
     std::clog << "Output pixels :" << std::endl;
-    for (size_t t = 0; t < data_size; t++) std::clog << output_data[t] << " ";
+    for (size_t t = 0; t < data_size; t++) std::clog << (int) output_data[t] << " ";
     std::clog << std::endl;
     auto result = cv::Mat(image.rows, image.cols, CV_8UC4, output_data);
     // Écriture dans le fichier de sortie
