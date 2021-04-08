@@ -88,7 +88,7 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
          uchar channel_green = (result_green > 255) ? 255 : ((result_green < 0) ? 0 : result_green);
          uchar channel_red = (result_red > 255) ? 255 : ((result_red < 0) ? 0 : result_red);
 
-         printf("[%d,%d] (%d, %d, %d)\n", i, j, channel_blue, channel_green, channel_red);
+//         printf("[%d,%d] (%d, %d, %d)\n", i, j, channel_blue, channel_green, channel_red);
 
          // Mise à jour du pixel
          candidate[device_channel_number * (j * cols + i)] = channel_blue;
@@ -174,9 +174,9 @@ int main(int argc, char** argv) {
     cudaError e3 = cudaMemcpy(output_data, convolution, data_size, cudaMemcpyDeviceToHost);
     if (e3 != cudaSuccess) std::cerr << "Error 3 : " << cudaGetErrorString(e3) << std::endl;
     // Création de l'image correspondante
-    std::clog << "Output pixels :" << std::endl;
-    for (size_t t = 0; t < data_size; t++) std::clog << (int) output_data[t] << " ";
-    std::clog << std::endl;
+//    std::clog << "Output pixels :" << std::endl;
+//    for (size_t t = 0; t < data_size; t++) std::clog << (int) output_data[t] << " ";
+//    std::clog << std::endl;
     auto result = cv::Mat(image.rows, image.cols, CV_8UC(device_channel_number), output_data);
     // Écriture dans le fichier de sortie
     cv::imwrite("convolution_gpu.png", result);
