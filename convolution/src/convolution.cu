@@ -56,7 +56,7 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
                  int current_factor = kernel[current_neighbor_index];
                  // Calcul des coordonnées du pixel à trouver
 
-                 printf("[%d,%d] (row: %ld; col:%ld) {divider: %f, offset: %f} - Kernel[0]: %d, factor: %d\n", i, j, rows, cols, divider, offset, kernel[0], current_factor);
+                 printf("[%d,%d] (row: %ld; col:%ld) {divider: %f, offset: %f} - current index: %ld, Kernel[index]: %d, factor: %d\n", i, j, rows, cols, divider, offset, current_neighbor_index, kernel[current_neighbor_index], current_factor);
 
                  int new_x = static_cast<int>(i) + device_coordinates[current_neighbor_index][0];
                  int new_y = static_cast<int>(j) + device_coordinates[current_neighbor_index][1];
