@@ -1,7 +1,10 @@
 #include "common.hpp"
 
+// Constante sur le device pour connaitre le nombre de channels de l'image
 __constant__ const size_t device_channel_number = 4;
+// Constante sur le device pour connaitre la taille des kernels
 __constant__ const size_t device_kernel_size = 9;
+// Liste des calculs à effectuer pour obtenir les pixels voisins
 __constant__ const char device_coordinates[device_kernel_size][2] {
     {-1, -1}, {-1, 0}, {-1, +1},
     {0, -1}, {0, 0}, {0, +1},
@@ -10,15 +13,16 @@ __constant__ const char device_coordinates[device_kernel_size][2] {
 
 /**
  * Fonction permettant de vérifier que le pixel souhaité n'est pas hors de l'image
- * @param i La position en hauteur
- * @param j La position en largeur
+ * @param  La position en largeur
+ * @param j La position en hauteur
  * @param current_coords L'indice du décalage à appliquer à la position actuel pour trouver le pixel
  * @param max_row La hauteur maximale de l'image
  * @param max_col La largeur maximale de l'image
  * @return True si le pixel est dans l'image, faux s'il est hors limite
  */
 __device__
-bool device_check(uint i, uint j, int current_coords, size_t max_row, size_t max_col) {
+bool device_check(uint i, uint j, uint current_coords, size_t max_row, size_t max_col) {
+    // Cast en signed int pour vérifier que la soustraction est > 0
     int new_x = static_cast<int>(i) + device_coordinates[current_coords][0];
     int new_y = static_cast<int>(j) + device_coordinates[current_coords][1];
     // Vérification que les coordonnées sont dans les limites
@@ -27,19 +31,24 @@ bool device_check(uint i, uint j, int current_coords, size_t max_row, size_t max
 
 /**
  * Fonction appliquant l'effet sur l'image
- * @param mat L'image source
- * @param kernel La matrice de convolution
+ * @param data La matrice de pixels de l'image source
+ * @param candidate La matrice de pixels de l'image destination (initialement vide)
+ * @param rows La hauteur maximale de l'image
+ * @param cols La largeur maximale de l'image
+ * @param kernel La matrice de facteur de l'effet
  * @param divider Le diviseur des sommes
  * @param offset Le décalage des sommes
- * @return Un pointer vers la nouvelle image
  */
  __global__
 void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols, const int* kernel, float divider, float offset) {
 
+     // Récupération des coordonnées du thread actuel
      uint i = blockIdx.x * blockDim.x + threadIdx.x;
      uint j = blockIdx.y * blockDim.y + threadIdx.y;
 
+     // Vérification que le thread n'est pas hors-limites
      if(i < cols && j < rows) {
+
          // Initialisation de la somme
          int sum_blue = 0;
          int sum_green = 0;
@@ -47,18 +56,18 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
 
          // Pour chacun des 9 cases dans son voisinage...
          // (size_t provoque des "narrow conversion")
-         for (int current_neighbor_index = 0; current_neighbor_index < device_kernel_size; current_neighbor_index++)
+         for (uint current_neighbor_index = 0; current_neighbor_index < device_kernel_size; current_neighbor_index++)
 
              // Si la case n'est pas hors limite...
              if (device_check(i, j, current_neighbor_index, rows, cols)) {
                  // Récupération du facteur courant (dans le kernel)
                  int current_factor = kernel[current_neighbor_index];
-                 // Calcul des coordonnées du pixel à trouver
 
+                 // Calcul des coordonnées du pixel à trouver
                  uint new_x = i + device_coordinates[current_neighbor_index][0];
                  uint new_y = j + device_coordinates[current_neighbor_index][1];
 
-                 // Récupération du pixel
+                 // Récupération des 3 channels de couleur du pixel
                  uchar blue = data[device_channel_number * (new_y * cols + new_x)];
                  uchar green = data[device_channel_number * (new_y * cols + new_x) + 1];
                  uchar red = data[device_channel_number * (new_y * cols + new_x) + 2];
@@ -83,6 +92,7 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
          candidate[device_channel_number * (j * cols + i)] = channel_blue;
          candidate[device_channel_number * (j * cols + i) + 1] = channel_green;
          candidate[device_channel_number * (j * cols + i) + 2] = channel_red;
+         // Ajout du channel alpha manuel
          candidate[device_channel_number * (j * cols + i) + 3] = data[device_channel_number * (j * cols + i) + 3];
      }
 }
@@ -93,20 +103,22 @@ void detection_bord(const_mat_ref mat, uchar* input, uchar* output) {
     // Calcule du nombre de block
     dim3 block_size( (( mat.cols - 1) / (thread_size.x - 2) + 1), (( mat.rows - 1 ) / (thread_size.y - 2) + 1) );
 
-
+    // Instanciation du kernel de l'effet
     std::vector<int> kernel({-1, -1, -1, -1, 8, -1, -1, -1, -1});
 
-    // Pointers de l'image de retour sur le devide + allocation
+    // Pointers du kernel sur le device + allocation
     int* kernel_ptr = nullptr;
-    cudaError e1 = cudaMalloc(&kernel_ptr, device_kernel_size * sizeof(int));
-    if (e1 != cudaSuccess) std::cerr << "Error 4 : " << cudaGetErrorString(e1) << std::endl;
+    cudaError error_cuda_malloc_kernel_ptr = cudaMalloc(&kernel_ptr, device_kernel_size * sizeof(int));
+    if (error_cuda_malloc_kernel_ptr != cudaSuccess) std::cerr << "Error 4 : " << cudaGetErrorString(error_cuda_malloc_kernel_ptr) << std::endl;
 
-    // Copie de l'image source vers le device
-    cudaError e2 = cudaMemcpy(kernel_ptr, kernel.data(), device_kernel_size * sizeof(int), cudaMemcpyHostToDevice);
-    if (e2 != cudaSuccess) std::cerr << "Error 5 : " << cudaGetErrorString(e2) << std::endl;
+    // Copie kernel vers le device
+    cudaError error_cuda_mecmcpy_kernel_ptr = cudaMemcpy(kernel_ptr, kernel.data(), device_kernel_size * sizeof(int), cudaMemcpyHostToDevice);
+    if (error_cuda_mecmcpy_kernel_ptr != cudaSuccess) std::cerr << "Error 5 : " << cudaGetErrorString(error_cuda_mecmcpy_kernel_ptr) << std::endl;
 
+    // Lancement du processus
     device_apply<<<block_size, thread_size, thread_size.x * thread_size.y>>>(input, output, mat.rows, mat.cols, kernel_ptr, 1.0f, 0.0f);
 
+    // Free du pointer de kernel sur le device
     cudaFree(kernel_ptr);
 }
 
@@ -117,7 +129,8 @@ int main(int argc, char** argv) {
 
     // Récupération de l'image
     cv::Mat image = cv::imread(argv[1], cv::IMREAD_UNCHANGED);
-    size_t data_size = image.rows * image.cols * device_channel_number;
+    // Constant permettant de sotcker la taille necessaires des matrices des images
+    const size_t data_size = image.rows * image.cols * device_channel_number;
 
     // Image vide
     if (image.empty() || !image.data) missing_data();
@@ -126,17 +139,17 @@ int main(int argc, char** argv) {
 
     // Pointers de l'image source sur le devide + allocation
     uchar* rgba_data = nullptr;
-    cudaError e0 = cudaMalloc(&rgba_data, data_size);
-    if (e0 != cudaSuccess) std::cerr << "Error 0 : " << cudaGetErrorString(e0) << std::endl;
+    cudaError error_cuda_malloc_rgb_data = cudaMalloc(&rgba_data, data_size);
+    if (error_cuda_malloc_rgb_data != cudaSuccess) std::cerr << "Error 0 : " << cudaGetErrorString(error_cuda_malloc_rgb_data) << std::endl;
 
     // Pointers de l'image de retour sur le devide + allocation
-    uchar* convolution;
-    cudaError e1 = cudaMalloc(&convolution, data_size);
-    if (e1 != cudaSuccess) std::cerr << "Error 1 : " << cudaGetErrorString(e1) << std::endl;
+    uchar* convolution = nullptr;
+    cudaError error_cuda_malloc_convolution = cudaMalloc(&convolution, data_size);
+    if (error_cuda_malloc_convolution != cudaSuccess) std::cerr << "Error 1 : " << cudaGetErrorString(error_cuda_malloc_convolution) << std::endl;
 
     // Copie de l'image source vers le device
-    cudaError e2 = cudaMemcpy(rgba_data, image.data, data_size, cudaMemcpyHostToDevice);
-    if (e2 != cudaSuccess) std::cerr << "Error 2 : " << cudaGetErrorString(e2) << std::endl;
+    cudaError error_cuda_memcpy_rgba_data = cudaMemcpy(rgba_data, image.data, data_size, cudaMemcpyHostToDevice);
+    if (error_cuda_memcpy_rgba_data != cudaSuccess) std::cerr << "Error 2 : " << cudaGetErrorString(error_cuda_memcpy_rgba_data) << std::endl;
 
     // TIMERS avant
     cudaEvent_t start, stop;
@@ -157,15 +170,12 @@ int main(int argc, char** argv) {
     cudaEventDestroy(start);
     cudaEventDestroy(stop);
 
-    // Pointers local de l'image de retour
+    // Pointers local de la matrice de pixels de l'image de retour
     auto* output_data = new uchar[data_size];
-    // Copie de l'image de retour depuis le device vers le locale
-    cudaError e3 = cudaMemcpy(output_data, convolution, data_size, cudaMemcpyDeviceToHost);
-    if (e3 != cudaSuccess) std::cerr << "Error 3 : " << cudaGetErrorString(e3) << std::endl;
+    // Copie de la matrice de pixels l'image de retour depuis le device vers le locale
+    cudaError error_cuda_memcpy_output_data = cudaMemcpy(output_data, convolution, data_size, cudaMemcpyDeviceToHost);
+    if (error_cuda_memcpy_output_data != cudaSuccess) std::cerr << "Error 3 : " << cudaGetErrorString(error_cuda_memcpy_output_data) << std::endl;
     // Création de l'image correspondante
-//    std::clog << "Output pixels :" << std::endl;
-//    for (size_t t = 0; t < data_size; t++) std::clog << (int) output_data[t] << " ";
-//    std::clog << std::endl;
     auto result = cv::Mat(image.rows, image.cols, CV_8UC(device_channel_number), output_data);
     // Écriture dans le fichier de sortie
     cv::imwrite("convolution_gpu.png", result);
