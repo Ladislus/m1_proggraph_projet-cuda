@@ -125,7 +125,7 @@ void detection_bord(const_mat_ref mat, uchar* input, uchar* output) {
     dim3 block_size( (( mat.cols - 1) / (thread_size.x - 2) + 1), (( mat.rows - 1 ) / (thread_size.y - 2) + 1) );
 
 
-    int kernel[device_kernel_size] {-1, -1, -1, -1, 8, -1, -1, -1, -1};
+    std::vector<int> kernel({-1, -1, -1, -1, 8, -1, -1, -1, -1});
 
     // Pointers de l'image de retour sur le devide + allocation
     int* kernel_ptr;
@@ -133,7 +133,7 @@ void detection_bord(const_mat_ref mat, uchar* input, uchar* output) {
     if (e1 != cudaSuccess) std::cerr << "Error 1 : " << cudaGetErrorString(e1) << std::endl;
 
     // Copie de l'image source vers le device
-    cudaError e2 = cudaMemcpy(kernel_ptr, kernel, device_kernel_size * sizeof(int), cudaMemcpyHostToDevice);
+    cudaError e2 = cudaMemcpy(kernel_ptr, kernel.data(), device_kernel_size * sizeof(int), cudaMemcpyHostToDevice);
     if (e2 != cudaSuccess) std::cerr << "Error 2 : " << cudaGetErrorString(e2) << std::endl;
 
     device_apply<<<block_size, thread_size, thread_size.x * thread_size.y>>>(input, output, mat.rows, mat.cols, kernel_ptr, 1.0f, 0.0f);
