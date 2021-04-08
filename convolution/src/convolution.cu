@@ -40,6 +40,8 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
      uint i = blockIdx.x * blockDim.x + threadIdx.x;
      uint j = blockIdx.y * blockDim.y + threadIdx.y;
 
+     printf("[%d,%d] data: %p", i, j, data);
+
      if(i < cols && j < rows) {
          // Initialisation de la somme
          int sum_blue = 0;
