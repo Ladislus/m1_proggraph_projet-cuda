@@ -40,7 +40,7 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
      uint i = blockIdx.x * blockDim.x + threadIdx.x;
      uint j = blockIdx.y * blockDim.y + threadIdx.y;
 
-     printf("[%d; %d]\n", i, j);
+     printf("[%d; %d], divider %f, offset %f\n", i, j, divider, offset);
      printf("Kernel %d\n", kernel[0]);
 
      if(i < cols && j < rows) {
@@ -66,7 +66,7 @@ void device_apply(const uchar* data, uchar* candidate, size_t rows, size_t cols,
                  int new_y = static_cast<int>(j) + device_coordinates[current_neighbor_index][1];
                  printf("[%d; %d] nighbor:%d OK factor:%d nx:%d ny:%d\n", i, j, current_neighbor_index, current_factor, new_x, new_y);
 
-                 if (new_x >= cols || new_x < 0 || new_y < 0 || new_y >= rows) printf("[%d; %d]\n", i, j);
+                 if (new_x >= cols || new_x < 0 || new_y < 0 || new_y >= rows) printf("ERROR : [%d; %d]\n", i, j);
 
                  // Récupération du pixel
                  uchar blue = data[device_channel_number * (new_y * cols + new_x)];
