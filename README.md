@@ -1,26 +1,24 @@
 # Projet CUDA
 **Membres du groupe:**  
- - Tom RIBARDIÈRE (2171029)
+ - Tom RIBARDIÈRE (2171029)  
  - Ladislas WALCAK (2174867)
 
 ## Algorithmes implantés
 
 Nous avons implémenté 2 algoritmes différents :
 
-### Algorithme grayscale
+### Algorithme Grayscale
 
 Lors du développement de l'effet ASCII Art, nous avons utilisé une fonction OpenCV permettant l'ouverture de l'image directement en niveau de gris 
 (fonction `cv::imread` avec le flag `cv::IMREAD_GRAYSCALE`). Ne sachant pas si cela été autorisé, nous avons implémenté cet algorithme en CPU et GPU afin de prouver
-que nous étions capable de la réaliser, mais ne l'avons utilisé dans les autres effets. Ce code applique à chaque channels de couleur de tous les pixels de 
-l'image (rouge, vert, bleu), des constantes multiplicative qui nous permettent d'obtenir une nuance de gris en fonction de l'intensité des couleurs d'un pixel.
-A l'ouverture, nous utilisons une fonction de la librairie OpenCV qui nous permet de ne récupérer l'image en 3 channels de couleurs, nous permettant donc de
-prendre en entrée des images de 3 channels ou plus.
+que nous étions capable de la réaliser, mais ne l'avons utilisé dans les autres effets. A l'ouverture, nous utilisons une fonction de la librairie OpenCV qui nous permet de ne récupérer l'image en 3 channels de couleurs, nous permettant donc de prendre en entrée des images de 3 channels ou plus. Ce code applique à chaque channels de couleur de tous les pixels de 
+l'image (rouge, vert, bleu), des constantes multiplicatives qui nous permettent d'obtenir une nuance de gris en fonction de l'intensité des couleurs d'un pixel.
 
 ### Algorithme ASCII Art
 
 Pour cet algorithme, nous regardons l'intensité des pixels de l'image d'entrée qui est importée en nuance de gris avec une fonction OpenCV.
 Lors du traitement, nous faisons une correspondance entre l'intensité d'un pixel de l'image et une liste de caractère pour choisir le caractère qui sera le plus adapté à l'intensité.
-Après avoir choisi le bon caractère dans la liste, nous l'ajoutons dans un fichier texte. Lors de l'criture du fichier de sorti, nous écrivons chaque caractère en 3 exemplaire, 
+Après avoir choisi le bon caractère dans la liste, nous l'ajoutons dans un fichier texte. Lors de l'écriture du fichier de sorti, nous écrivons chaque caractère en 3 exemplaires, 
 afin de palier à la déformation de l'image (les caractères étant plus hauts que larges, les images ont tendance à être aplatie).
 
 ### Algorithme Convolution
