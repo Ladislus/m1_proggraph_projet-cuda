@@ -38,7 +38,7 @@ Le code CPU actuel contient les effets :
 - Flou Gaussien
 - Détéction de bord
 
-Pour le code GPU, nous n'avons implémenté seulemennt la détéction de bord, cependant, pour avoir les 2 autres effets, il vous suffit de changer le kernel, le diviseur et le décalage dans le code. 
+Pour le code GPU, nous avons seulement mis les paramètres initiaux de la détéction de bord, cependant, pour avoir les 2 autres effets, il vous suffit de changer le kernel, le diviseur et le décalage dans le code. 
 
 Nous avons identifié un problème sur cet algoritme pour la détéction de bord, entre les versions CPU et GPU. Nous avons pour la version CPU des couleurs orange et rouge 
 qui ne semble pas à leurs places, et pour la version GPU tout est presque seulement composé de bleu turquoise. Nous ne savons pas quelle implémentation est la bonne, et n'avons
