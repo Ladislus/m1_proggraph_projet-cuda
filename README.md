@@ -31,7 +31,7 @@ Pour obtenir un effet, il nous suffit de choisir une matrice appelée *noyau* ou
 Il faut également que vous choisissiez un deviseur (division de la somme totale finale) et un décalage (necessaire dans les cas ou la somme, après division, pourrait être supérieure à 255)
 qui feront parti de la formule appliquée pour le changement de valeur des pixels.
 
-Vu que cette effet est assez générique et que nous n'avons que le kernel (matrice), le diviseur et le décalage qui sont des variables, nous pouvons ajouter des effets assez facilement.
+Vu que cette effet est assez générique et que nous n'avons que le kernel (matrice), le diviseur et le décalage qui sont des variables, nous pouvons ajouter des effets assez facilement (comme par exemple plusieurs types de flou, plusieurs type de detections de contours, des rotations, l'amélioration de la netteté, augmentation de contraste, des redimensions, effets mirroir, déformations ...).
 Le code contient une map permettant d'associer un fonction à une enum, afin d'appliquer l'effet désiré. Ces fonctions ne sont la que pour changer les paramètres initiaux.  
 Le code CPU actuel contient les effets :
 - Flou Box
