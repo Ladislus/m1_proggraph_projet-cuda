@@ -40,9 +40,7 @@ Le code CPU actuel contient les effets :
 
 Pour le code GPU, nous avons seulement mis les paramètres initiaux de la détéction de bord, cependant, pour avoir les 2 autres effets, il vous suffit de changer le kernel, le diviseur et le décalage dans le code. 
 
-Nous avons identifié un problème sur cet algoritme pour la détéction de bord, entre les versions CPU et GPU. Nous avons pour la version CPU des couleurs orange et rouge 
-qui ne semble pas à leurs places, et pour la version GPU tout est presque seulement composé de bleu turquoise. Nous ne savons pas quelle implémentation est la bonne, et n'avons
-pas réussi à trouver la cause de ce problème (nous soupçonnons que la fonction `cv::Mat.at()` retourne le pixel en RGB, mais au sein de la matrice, les données sont au format BGR).
+Nous avons identifié un problème sur cet algoritme pour la détéction de bord, entre les versions CPU et GPU. Nous avons, pour la version CPU, des bords de couleurs orange et rouge qui ne semble pas à leurs places, et pour la version GPU tout est presque seulement composé de bleu turquoise. Nous ne savons pas quelle implémentation est la bonne, et n'avons pas réussi à trouver la cause de ce problème (nous soupçonnons que la fonction `cv::Mat.at()` retourne le pixel en RGB, mais au sein de la matrice, les données sont au format BGR).
 
 ## Optimisations choisies
 
